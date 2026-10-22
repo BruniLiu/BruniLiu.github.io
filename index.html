@@ -25,6 +25,14 @@
 @property --p { syntax: "<length>"; inherits: true; initial-value: 0px; }
 
 :root {
+  /* Scale units. The page is drawn for a 1240px-wide composition and scaled as a whole:
+     --uw scales the sections with the screen width (1px up to ~1500px wide, then grows,
+     capped for ultrawide), --ul scales the laptop lid by width AND by viewport height,
+     so the lid always fits the first screen with the next section peeking in.
+     Both stay 1px below 901px, where the tablet and phone layouts take over. */
+  --uw: 1px;
+  --ul: 1px;
+
   /* printed sticker colours (theme independent) */
   --blue: #9fd6ef;
   --blue-2: #5aa9e0;
@@ -55,7 +63,6 @@
   --keyline: rgba(19, 26, 48, .14);
   --hard: rgba(19, 26, 48, .2);
   --drop: rgba(12, 18, 38, .34);
-  --hinge: #0e1426;
 
   --display: "Bagel Fat One", "Arial Rounded MT Bold", "Arial Black", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --sans: "Bricolage Grotesque", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -86,7 +93,6 @@
     --drop: rgba(0, 0, 0, .5);
     --lid: #1c2745;
     --lid-hi: #2c3a63;
-    --hinge: #050912;
     color-scheme: dark;
   }
 }
@@ -110,7 +116,6 @@
   --drop: rgba(0, 0, 0, .5);
   --lid: #1c2745;
   --lid-hi: #2c3a63;
-  --hinge: #050912;
   color-scheme: dark;
 }
 
@@ -126,7 +131,7 @@ body {
   background-size: 24px 24px;
   background-position: -1px -1px;
   color: var(--text);
-  font: 400 17px/1.6 var(--sans);
+  font: 400 1.0625rem/1.6 var(--sans);
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -152,8 +157,9 @@ a:hover { text-decoration-color: currentColor; }
 ::selection { background: var(--pink); color: var(--s-ink); }
 
 .page {
-  max-width: 1240px; margin: 0 auto;
-  padding-block: calc(28px + env(safe-area-inset-top, 0px)) 56px;
+  /* grows with the screen instead of stopping at 1240px; the desk fills the rest */
+  max-width: clamp(1240px, 82vw, 1800px); margin: 0 auto;
+  padding-block: calc(28px + env(safe-area-inset-top, 0px)) 3.5rem;
   overflow-x: hidden; overflow-x: clip;
 }
 
@@ -187,7 +193,7 @@ a:hover { text-decoration-color: currentColor; }
     }
   }
 }
-@media (hover: hover) { .stk.peel:hover { --p: 22px; } }
+@media (hover: hover) { .stk.peel:hover { --p: calc(22 * var(--ul)); } }
 [data-drag] { touch-action: auto; }
 @media (hover: hover) and (pointer: fine) {
   [data-drag] { cursor: grab; -webkit-user-select: none; user-select: none; }
@@ -199,23 +205,24 @@ a:hover { text-decoration-color: currentColor; }
 
 /* label sticker: white die-cut border around a printed colour */
 .label {
+  --bw: calc(5 * var(--ul));
   display: inline-block; margin: 0;
-  padding: 9px 16px 10px;
-  border: 5px solid var(--cut); border-radius: 12px;
+  padding: calc(9 * var(--ul)) calc(16 * var(--ul)) calc(10 * var(--ul));
+  border: var(--bw) solid var(--cut); border-radius: calc(12 * var(--ul));
   background: var(--f); color: var(--s-ink);
-  font: 700 1rem/1.3 var(--sans);
+  font: 700 max(14px, calc(16 * var(--ul)))/1.3 var(--sans);
 }
 /* peel corner: both layers are cut on the same fold line; ::after is the flap folded back.
    The label keeps empty room on the right so the flap never folds over the text. */
 .peel {
-  padding-right: 34px;
+  padding-right: calc(34 * var(--ul));
   border-color: transparent;
   background:
-    linear-gradient(-45deg, transparent calc(var(--p) * .7071 - 7.07px), var(--f) 0) padding-box,
+    linear-gradient(-45deg, transparent calc(var(--p) * .7071 - var(--bw) * 1.4142), var(--f) 0) padding-box,
     linear-gradient(-45deg, transparent calc(var(--p) * .7071), var(--cut) 0) border-box;
 }
 .peel::after {
-  content: ""; position: absolute; right: -5px; bottom: -5px;
+  content: ""; position: absolute; right: calc(-1 * var(--bw)); bottom: calc(-1 * var(--bw));
   width: var(--p); height: var(--p);
   background: linear-gradient(135deg, #ffffff 0%, #e9edf3 30%, #c4ccda 49.5%, transparent 50.5%);
   border-top-left-radius: 5px;
@@ -225,33 +232,53 @@ a:hover { text-decoration-color: currentColor; }
 
 /* ================= hero: the laptop lid ================= */
 .hero { position: relative; }
+.laptop {
+  --lr: calc(34 * var(--ul)); /* lid corner radius */
+  --base: calc(14 * var(--ul)); /* how far the base shows below the lid */
+  position: relative; isolation: isolate;
+  padding-bottom: var(--base);
+}
 .lid {
-  --padx: clamp(40px, 5vw, 72px);
-  --padt: 58px;
-  --photo: clamp(300px, 27.5vw, 380px);
-  --pt: 34px; /* photo drop from the top of the lid */
-  --name: clamp(118px, 6vw + 52px, 142px);
-  position: relative; overflow: hidden;
-  border-radius: 34px;
+  --padx: calc(64 * var(--ul));
+  --padt: calc(44 * var(--ul));
+  --photo: calc(350 * var(--ul));
+  --pt: calc(14 * var(--ul)); /* photo drop from the top of the content */
+  --name: calc(132 * var(--ul));
+  position: relative; z-index: 1; overflow: hidden;
+  border-radius: var(--lr);
   background:
     radial-gradient(90% 70% at 18% 0%, var(--lid-hi), transparent 70%),
     linear-gradient(160deg, var(--lid-hi) -20%, var(--lid) 45%);
   background-color: var(--lid);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07), inset 0 2px 0 rgba(255, 255, 255, .06), 0 30px 60px -30px rgba(10, 16, 34, .55);
+  /* soft seam along the front edge, where the lid meets the base */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07), inset 0 2px 0 rgba(255, 255, 255, .06), inset 0 -2px 0 rgba(0, 0, 0, .2);
   display: grid;
   grid-template-columns: var(--photo) minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
   grid-template-areas: "photo name" "photo labels" "photo links";
-  column-gap: clamp(32px, 3.6vw, 52px);
-  padding: var(--padt) var(--padx) 64px;
+  column-gap: calc(48 * var(--ul));
+  padding: var(--padt) var(--padx) calc(44 * var(--ul));
   isolation: isolate;
 }
 .lid:focus { outline: none; }
+/* the base of the closed laptop: the same slab as the lid, showing only along the front
+   edge (and in the rounded corners), with a thumb notch. Never darker than the lid. */
 .hinge {
-  width: 34%; height: 12px; margin: 0 auto;
-  background: var(--hinge); border-radius: 0 0 14px 14px;
-  opacity: .9;
+  position: absolute; z-index: 0; left: 0; right: 0; top: var(--base); bottom: 0;
+  border-radius: var(--lr);
+  background:
+    linear-gradient(0deg, var(--lid) 0, var(--lid-hi) calc(var(--base) - 2px), color-mix(in srgb, var(--lid-hi), #ffffff 14%) calc(var(--base) - 1px), var(--lid-hi) var(--base));
+  background-color: var(--lid-hi);
+  box-shadow: 0 30px 60px -30px rgba(10, 16, 34, .55);
 }
+.hinge::after {
+  content: ""; position: absolute; left: 50%; bottom: calc(var(--base) * .45);
+  width: calc(var(--base) * 8.5); height: calc(var(--base) * .55);
+  transform: translateX(-50%);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  background: var(--lid);
+}
+.lid-in { display: contents; }
 
 .photo { grid-area: photo; align-self: start; width: 100%; margin-top: var(--pt); --r: -5deg; --i: 0; z-index: 2; }
 .photo img { display: block; width: 100%; height: auto; -webkit-user-drag: none; pointer-events: none; }
@@ -303,31 +330,31 @@ a:hover { text-decoration-color: currentColor; }
   letter-spacing: .08em;
   color: #ffffff; background: var(--seal);
   border-radius: .3em;
-  box-shadow: inset 0 0 0 .14em var(--seal), inset 0 0 0 .22em #ffffff, 0 0 0 5px var(--cut);
+  box-shadow: inset 0 0 0 .14em var(--seal), inset 0 0 0 .22em #ffffff, 0 0 0 calc(5 * var(--ul)) var(--cut);
 }
 
 .cluster {
   grid-area: labels; position: relative; z-index: 3;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 16px;
-  margin-top: 26px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: calc(16 * var(--ul));
+  margin-top: calc(24 * var(--ul));
 }
-.role { --f: var(--lemon); --r: -2deg; --i: 5; font-size: 1.0625rem; text-wrap: balance; }
-.affil { --f: var(--pink); --r: 1.5deg; --i: 6; font-weight: 600; font-size: .9375rem; line-height: 1.35; }
+.role { --f: var(--lemon); --r: -2deg; --i: 5; font-size: max(14px, calc(17 * var(--ul))); text-wrap: balance; }
+.affil { --f: var(--pink); --r: 1.5deg; --i: 6; font-weight: 600; font-size: max(13px, calc(15 * var(--ul))); line-height: 1.35; }
 .affil span { display: block; }
 
 .links {
   grid-area: links; align-self: start; position: relative; z-index: 3;
-  list-style: none; margin: 22px 0 0; padding: 0;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 14px;
-  max-width: 480px; /* Scholar slot always takes its own row, clear of the corner stickers */
+  list-style: none; margin: calc(22 * var(--ul)) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: calc(16 * var(--ul)) calc(14 * var(--ul));
+  max-width: max(400px, calc(480 * var(--ul))); /* Scholar slot always takes its own row, clear of the corner stickers */
 }
 .links li { min-width: 0; max-width: 100%; }
 .chip {
   display: inline-flex; align-items: center; gap: .45em;
   max-width: 100%;
-  padding: 8px 16px 9px;
-  border: 4px solid var(--cut); border-radius: 999px;
-  font: 600 .9375rem/1.25 var(--sans);
+  padding: calc(8 * var(--ul)) calc(16 * var(--ul)) calc(9 * var(--ul));
+  border: calc(4 * var(--ul)) solid var(--cut); border-radius: 999px;
+  font: 600 max(13px, calc(15 * var(--ul)))/1.25 var(--sans);
   text-decoration: none;
 }
 .chip:hover { text-decoration: none; }
@@ -335,45 +362,49 @@ a:hover { text-decoration-color: currentColor; }
 .chip-gh svg { width: 1.1em; height: 1.1em; flex: none; }
 .chip-mail {
   background: #ffffff; color: #1f56c9; --r: 1.5deg; --i: 8;
-  font: 600 .875rem/1.3 var(--mono);
+  font: 600 max(12px, calc(14 * var(--ul)))/1.3 var(--mono);
   box-shadow: inset 0 0 0 2px var(--blue);
   overflow-wrap: anywhere;
 }
 .chip-mail:hover { text-decoration: underline; text-decoration-color: currentColor; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .slot {
-  display: inline-block; padding: 8px 16px 9px;
+  display: inline-block; padding: calc(8 * var(--ul)) calc(16 * var(--ul)) calc(9 * var(--ul));
   border: 2px dashed rgba(220, 230, 245, .55); border-radius: 999px;
-  color: #c5cfe2; font: 500 .8125rem/1.25 var(--mono);
+  color: #c5cfe2; font: 500 max(11.5px, calc(13 * var(--ul)))/1.25 var(--mono);
   transform: rotate(-1deg);
 }
 .lid :focus-visible { outline-color: var(--lemon); outline-offset: 5px; }
 
-/* decorative stickers on the lid */
+/* decorative stickers on the lid. On laptops and up, the ones that decorate the photo and the
+   name (gauss, sigma, pink star) are placed inside .lid-in, so they follow the content when the
+   lid is taller than it; the rest sit in the lid's corners. Everything is sized in --ul. */
 .deco { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .d { position: absolute; display: block; overflow: visible; pointer-events: auto; }
 .f {
-  font: 700 1.25rem/1 var(--mono); color: var(--s-ink); white-space: nowrap;
-  padding: 10px 15px 11px; border-radius: 10px;
-  background: var(--f); border: 4px solid var(--cut);
+  font: 700 max(15px, calc(20 * var(--ul)))/1 var(--mono); color: var(--s-ink); white-space: nowrap;
+  padding: calc(10 * var(--ul)) calc(15 * var(--ul)) calc(11 * var(--ul)); border-radius: calc(10 * var(--ul));
+  background: var(--f); border: calc(4 * var(--ul)) solid var(--cut);
 }
 .f sup { font-size: .62em; vertical-align: .72em; margin-left: .04em; line-height: 0; }
 .f i { font-style: normal; }
-.d-gauss  { width: 150px; left: calc(var(--padx) + var(--photo) - 104px); top: 12px; --r: 14deg; --i: 9; }
-.d-r3     { width: 108px; right: 3.2%; top: 26px; --r: 11deg; --i: 10; }
-.d-sigma  { --f: var(--lemon); right: 3.6%; top: 168px; --r: 6deg; --i: 11; }
-.d-ct     { width: 124px; left: calc(var(--padx) - 20px); bottom: 62px; --r: -12deg; --i: 12; }
-.d-yax    { --f: var(--pink); left: calc(var(--padx) + 128px); bottom: 34px; --r: -4deg; --i: 13; }
-.d-frames { width: 164px; right: 4%; bottom: 26px; --r: 6deg; --i: 14; }
-.d-star1  { width: 46px; right: calc(4% + 186px); bottom: 34px; --r: -8deg; --i: 15; }
-.d-star2  { width: 40px; left: calc(var(--padx) + var(--photo) - 10px); top: calc(var(--padt) + var(--pt) + var(--photo) * .66); --r: 12deg; --i: 16; }
+.d-gauss  { width: calc(150 * var(--ul)); left: calc(var(--photo) - 130 * var(--ul)); top: calc(-36 * var(--ul)); --r: 14deg; --i: 9; }
+.d-sigma  { --f: var(--lemon); right: calc(-30 * var(--ul)); top: calc(var(--name) * .86); --r: 6deg; --i: 11; }
+.d-star2  { width: calc(40 * var(--ul)); left: calc(var(--photo) - 12 * var(--ul)); top: calc(var(--pt) + var(--photo) * .7); --r: 12deg; --i: 16; }
+.d-r3     { width: calc(108 * var(--ul)); right: calc(40 * var(--ul)); top: calc(24 * var(--ul)); --r: 11deg; --i: 10; }
+/* CT and y = Ax sit under the photo: --cx is how far the centred content is inset on very wide lids */
+.deco-b   { --cx: max(0px, (100% - 2 * var(--padx) - 1240 * var(--ul)) / 2); }
+.d-ct     { width: calc(124 * var(--ul)); left: calc(var(--padx) + var(--cx) - 22 * var(--ul)); bottom: calc(50 * var(--ul)); --r: -12deg; --i: 12; }
+.d-yax    { --f: var(--pink); left: calc(var(--padx) + var(--cx) + 134 * var(--ul)); bottom: calc(28 * var(--ul)); --r: -4deg; --i: 13; }
+.d-frames { width: calc(152 * var(--ul)); right: calc(40 * var(--ul)); bottom: calc(20 * var(--ul)); --r: 6deg; --i: 14; }
+.d-star1  { width: calc(46 * var(--ul)); right: calc(222 * var(--ul)); bottom: calc(34 * var(--ul)); --r: -8deg; --i: 15; }
 .tape {
-  position: absolute; z-index: 1; height: 34px; width: 190px;
+  position: absolute; z-index: 1; height: calc(34 * var(--ul)); width: calc(190 * var(--ul));
   clip-path: polygon(0 0, 100% 0, 97.5% 20%, 100% 40%, 97.5% 60%, 100% 80%, 97.5% 100%, 0 100%, 2.5% 80%, 0 60%, 2.5% 40%, 0 20%);
   opacity: .92;
   pointer-events: none;
 }
-.tape-a { top: 26px; left: -42px; transform: rotate(-38deg); background: repeating-linear-gradient(90deg, rgba(255, 156, 195, .9) 0 10px, rgba(255, 196, 219, .9) 10px 20px); }
-.tape-b { bottom: 54px; right: -52px; transform: rotate(-30deg); background-color: rgba(159, 214, 239, .85); background-image: radial-gradient(rgba(37, 89, 200, .5) 2px, transparent 2.5px); background-size: 12px 12px; }
+.tape-a { top: calc(26 * var(--ul)); left: calc(-42 * var(--ul)); transform: rotate(-38deg); background: repeating-linear-gradient(90deg, rgba(255, 156, 195, .9) 0 10px, rgba(255, 196, 219, .9) 10px 20px); }
+.tape-b { bottom: calc(54 * var(--ul)); right: calc(-52 * var(--ul)); transform: rotate(-30deg); background-color: rgba(159, 214, 239, .85); background-image: radial-gradient(rgba(37, 89, 200, .5) 2px, transparent 2.5px); background-size: 12px 12px; }
 
 .reset {
   position: absolute; z-index: 20; right: 22px; top: calc(100% + 10px);
@@ -385,11 +416,45 @@ a:hover { text-decoration-color: currentColor; }
 }
 .reset:hover { background: #fff0b0; }
 
+/* ================= laptop and up: one fluid lid that fits the first screen =================
+   --W is the content width. --ul is the lid's scale: the width-based scale (W / 1240), but
+   capped so that lid + base + the gap to the notebook + ~50px of notebook (its sticker label
+   and torn edge) fit in the viewport height. When the lid would be shorter than that, it grows
+   (up to a 5:3 laptop proportion) and centres its content, so the fold always lands just
+   inside the notebook's top margin, never on a line of the research question. */
+@media (min-width: 901px) {
+  :root {
+    --W: min(100vw - 56px, clamp(1240px, 82vw, 1800px));
+    --ul: max(.66px, min(var(--W) / 1240, (100svh - 28px - 50 * var(--uw)) / 738));
+  }
+  .hero {
+    display: flex; flex-direction: column; justify-content: center;
+    /* on tall screens (portrait tablets, 16:10 monitors) the lid stops growing at 5:3 and only a
+       little desk is added around it */
+    min-height: min(100svh - 28px - 96 * var(--ul) - 50 * var(--uw), .6 * var(--W) + 110 * var(--ul));
+  }
+  .lid {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: min(100svh - 28px - 110 * var(--ul) - 50 * var(--uw), .6 * var(--W));
+  }
+  .lid-in {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--photo) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "photo name" "photo labels" "photo links";
+    column-gap: calc(48 * var(--ul));
+    /* on short, wide windows the content stays one composition, centred, instead of
+       leaving the right half of the lid empty */
+    width: 100%; max-width: calc(1240 * var(--ul)); margin-inline: auto;
+  }
+}
+
 /* ================= research question: a torn notebook page ================= */
 .nb {
   position: relative; isolation: isolate;
-  max-width: 1180px; margin: 104px auto 0;
-  padding: 72px clamp(24px, 4vw, 60px) 52px clamp(62px, 8vw, 118px);
+  margin: 6.5rem 0 0;
+  padding: 4.5rem clamp(24px, 4vw, 3.75rem) 3.25rem clamp(62px, 8vw, 7.375rem);
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
   column-gap: clamp(32px, 5vw, 72px);
@@ -398,20 +463,21 @@ a:hover { text-decoration-color: currentColor; }
 .nb-paper { position: absolute; inset: 0; z-index: -1; filter: drop-shadow(0 0 1px var(--sheet-edge)) drop-shadow(0 22px 22px var(--sheet-shadow)); }
 .nb-paper i {
   position: absolute; inset: 0;
-  --m: clamp(40px, 5.4vw, 78px);
+  --m: clamp(40px, 5.4vw, 4.875rem);
+  --rl: 36px; /* ruled line pitch */
   background-color: var(--sheet);
   background-image:
     linear-gradient(90deg, transparent calc(var(--m) - 1px), var(--margin-line) calc(var(--m) - 1px) calc(var(--m) + 1px), transparent calc(var(--m) + 1px) calc(var(--m) + 5px), var(--margin-line) calc(var(--m) + 5px) calc(var(--m) + 6px), transparent calc(var(--m) + 6px)),
-    repeating-linear-gradient(180deg, transparent 0 35px, var(--ruled) 35px 36px);
-  background-position: 0 0, 0 56px;
+    repeating-linear-gradient(180deg, transparent 0 calc(var(--rl) - 1px), var(--ruled) calc(var(--rl) - 1px) var(--rl));
+  background-position: 0 0, 0 calc(var(--rl) * 1.56);
   background-repeat: no-repeat, repeat;
   clip-path: polygon(0 10px, 2% 2px, 4% 9px, 6% 1px, 8% 8px, 10% 3px, 12% 10px, 14% 2px, 16% 8px, 18% 0, 20% 9px, 22% 3px, 24% 10px, 26% 1px, 28% 7px, 30% 2px, 32% 9px, 34% 0, 36% 8px, 38% 3px, 40% 10px, 42% 2px, 44% 9px, 46% 1px, 48% 8px, 50% 3px, 52% 10px, 54% 0, 56% 8px, 58% 2px, 60% 9px, 62% 1px, 64% 10px, 66% 3px, 68% 8px, 70% 0, 72% 9px, 74% 2px, 76% 10px, 78% 1px, 80% 8px, 82% 3px, 84% 9px, 86% 0, 88% 8px, 90% 2px, 92% 10px, 94% 1px, 96% 8px, 98% 2px, 100% 9px, 100% 100%, 0 100%);
   border-radius: 0 0 6px 6px;
 }
-.holes { position: absolute; z-index: 0; left: clamp(12px, 1.8vw, 26px); top: 70px; bottom: 40px; display: flex; flex-direction: column; justify-content: space-around; }
-.holes i { display: block; width: 18px; height: 18px; border-radius: 50%; background: var(--desk); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .28); }
+.holes { position: absolute; z-index: 0; left: clamp(12px, 1.8vw, 1.625rem); top: 4.375rem; bottom: 2.5rem; display: flex; flex-direction: column; justify-content: space-around; }
+.holes i { display: block; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: var(--desk); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .28); }
 .nb-q { position: relative; min-width: 0; }
-.nb > .hd { left: clamp(56px, 7.4vw, 108px); }
+.nb > .hd { left: clamp(56px, 7.4vw, 6.75rem); }
 .thesis {
   font: 800 clamp(2.25rem, 1.05rem + 3.4vw, 4.25rem)/1.04 var(--sans);
   font-variation-settings: "opsz" 96;
@@ -431,7 +497,7 @@ a:hover { text-decoration-color: currentColor; }
   background: repeating-linear-gradient(90deg, rgba(255, 156, 195, .95) 0 .22em, rgba(255, 186, 214, .95) .22em .44em);
   clip-path: polygon(0 0, 100% 0, 98% 20%, 100% 40%, 98% 60%, 100% 80%, 98% 100%, 0 100%, 2% 80%, 0 60%, 2% 40%, 0 20%);
 }
-.qburst { position: absolute; width: 96px; right: -6px; top: -30px; --r: 12deg; z-index: 2; }
+.qburst { position: absolute; width: 6rem; right: -.375rem; top: -1.875rem; --r: 12deg; z-index: 2; }
 
 .path {
   list-style: none; margin: 0; padding: 0;
@@ -439,21 +505,21 @@ a:hover { text-decoration-color: currentColor; }
 }
 .stage {
   position: relative;
-  display: grid; grid-template-columns: 132px minmax(0, 1fr); column-gap: 24px;
+  display: grid; grid-template-columns: 8.25rem minmax(0, 1fr); column-gap: 1.5rem;
   align-items: center;
-  padding-bottom: 26px;
+  padding-bottom: 1.625rem;
   min-width: 0;
 }
 .stage:last-child { padding-bottom: 0; }
-.stage-art { position: relative; width: 132px; height: 104px; display: grid; place-items: center; }
-.stage-art svg { display: block; width: 124px; height: 96px; overflow: visible; }
+.stage-art { position: relative; width: 8.25rem; height: 6.5rem; display: grid; place-items: center; }
+.stage-art svg { display: block; width: 7.75rem; height: 6rem; overflow: visible; }
 .stage:nth-child(1) .stage-art svg { --r: -6deg; }
-.stage:nth-child(2) .stage-art svg { --r: 5deg; width: 96px; }
+.stage:nth-child(2) .stage-art svg { --r: 5deg; width: 6rem; }
 .stage:nth-child(3) .stage-art svg { --r: -3deg; }
 .num {
-  position: absolute; z-index: 2; left: -6px; top: -4px;
+  position: absolute; z-index: 2; left: -.375rem; top: -.25rem;
   display: grid; place-items: center;
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 2rem; height: 2rem; border-radius: 50%;
   font: 700 .75rem/1 var(--mono); color: var(--s-ink);
   background: var(--lemon);
   box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
@@ -463,52 +529,52 @@ a:hover { text-decoration-color: currentColor; }
 .stage:nth-child(3) .num { background: var(--pink); }
 .stage:not(:last-child)::after {
   /* dotted hand-off from one sticker to the next */
-  content: ""; position: absolute; left: 63px; top: 108px; bottom: 2px; width: 6px;
+  content: ""; position: absolute; left: 3.9375rem; top: 6.75rem; bottom: 2px; width: 6px;
   background: radial-gradient(circle, var(--muted) 1.6px, transparent 2px) 50% 0 / 6px 11px repeat-y;
   opacity: .75;
 }
 .stage h3 { margin: 0; font: 750 1.3125rem/1.2 var(--sans); color: var(--ink); letter-spacing: -.01em; }
 .now {
-  display: inline-block; margin-left: 10px; vertical-align: .14em;
+  display: inline-block; margin-left: .625rem; vertical-align: .14em;
   font: 700 .6875rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
   color: #ffffff; background: var(--pink-hot);
   padding: 5px 7px 5px 8px; border-radius: 5px;
   box-shadow: 0 0 0 3px var(--cut), 0 4px 8px -2px var(--drop);
   transform: rotate(-7deg);
 }
-.stage p { margin-top: 6px; font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 30ch; text-wrap: pretty; }
-.stage .see { display: inline-block; margin-top: 8px; font: 600 .8125rem/1.2 var(--mono); }
+.stage p { margin-top: .375rem; font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 30ch; text-wrap: pretty; }
+.stage .see { display: inline-block; margin-top: .5rem; font: 600 .8125rem/1.2 var(--mono); }
 
 /* ================= section headings: die-cut stickers of different shapes ================= */
 .hd {
-  position: absolute; z-index: 3; top: -26px; left: clamp(14px, 4vw, 36px);
+  position: absolute; z-index: 3; top: -1.625rem; left: clamp(14px, 4vw, 2.25rem);
   isolation: isolate;
-  margin: 0; padding: 11px 20px 13px;
+  margin: 0; padding: .6875rem 1.25rem .8125rem;
   font: 400 clamp(1.375rem, 1.15rem + .9vw, 1.875rem)/1 var(--display);
   letter-spacing: .01em; color: var(--s-ink); white-space: nowrap;
   transform: rotate(var(--r, -2deg));
   filter: drop-shadow(0 1.5px 0 var(--drop)) drop-shadow(0 8px 9px var(--drop));
 }
 .hd::before, .hd::after { content: ""; position: absolute; z-index: -1; }
-.hd::before { inset: -5px; background: var(--cut); }
+.hd::before { inset: -.3125rem; background: var(--cut); }
 .hd::after { inset: 0; background: var(--f); }
-.hd-label::before { border-radius: 17px; }
-.hd-label::after { border-radius: 12px; }
+.hd-label::before { border-radius: 1.0625rem; }
+.hd-label::after { border-radius: .75rem; }
 /* speech bubble */
-.hd-bubble::before { border-radius: 22px; }
-.hd-bubble::after { border-radius: 17px; }
-.hd-bubble i { position: absolute; z-index: -1; left: 24px; bottom: -15px; width: 26px; height: 20px; }
+.hd-bubble::before { border-radius: 1.375rem; }
+.hd-bubble::after { border-radius: 1.0625rem; }
+.hd-bubble i { position: absolute; z-index: -1; left: 1.5rem; bottom: -.9375rem; width: 1.625rem; height: 1.25rem; }
 .hd-bubble i::before, .hd-bubble i::after { content: ""; position: absolute; clip-path: polygon(0 0, 100% 0, 6% 100%); }
-.hd-bubble i::before { left: -6px; right: -9px; top: -6px; bottom: -8px; background: var(--cut); }
-.hd-bubble i::after { inset: -4px 0 0; background: var(--f); }
+.hd-bubble i::before { left: -.375rem; right: -.5625rem; top: -.375rem; bottom: -.5rem; background: var(--cut); }
+.hd-bubble i::after { inset: -.25rem 0 0; background: var(--f); }
 /* starburst */
-.hd-burst { top: -38px; padding: 24px 28px 26px; }
+.hd-burst { top: -2.375rem; padding: 1.5rem 1.75rem 1.625rem; }
 .hd-burst::before, .hd-burst::after {
   clip-path: polygon(50% 0%, 58.7% 12%, 71.7% 5%, 74.3% 19.5%, 89.1% 18.8%, 85.1% 33.1%, 98.7% 38.9%, 89% 50%, 98.7% 61.1%, 85.1% 66.9%, 89.1% 81.2%, 74.3% 80.5%, 71.7% 95%, 58.7% 88%, 50% 100%, 41.3% 88%, 28.3% 95%, 25.7% 80.5%, 10.9% 81.2%, 14.9% 66.9%, 1.3% 61.1%, 11% 50%, 1.3% 38.9%, 14.9% 33.1%, 10.9% 18.8%, 25.7% 19.5%, 28.3% 5%, 41.3% 12%);
 }
-.hd-burst::before { inset: -6px -7px; }
+.hd-burst::before { inset: -.375rem -.4375rem; }
 /* ticket with notches and a perforation */
-.hd-ticket { padding-left: 40px; padding-right: 24px; }
+.hd-ticket { padding-left: 2.5rem; padding-right: 1.5rem; }
 .hd-ticket::before {
   border-radius: 13px;
   -webkit-mask: radial-gradient(circle at 5px 50%, transparent 5px, #000 5.5px) left / 51% 100% no-repeat, radial-gradient(circle at calc(100% - 5px) 50%, transparent 5px, #000 5.5px) right / 51% 100% no-repeat;
@@ -523,31 +589,31 @@ a:hover { text-decoration-color: currentColor; }
           mask: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px) right / 51% 100% no-repeat;
 }
 /* ribbon with notched ends */
-.hd-ribbon { padding-left: 32px; padding-right: 32px; }
+.hd-ribbon { padding-left: 2rem; padding-right: 2rem; }
 .hd-ribbon::before { clip-path: polygon(0 0, 100% 0, calc(100% - 13px) 50%, 100% 100%, 0 100%, 13px 50%); }
 .hd-ribbon::after { clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%, 16px 50%); }
 /* scalloped seal */
-.hd-seal { top: -36px; padding: 24px 28px 26px; }
+.hd-seal { top: -2.25rem; padding: 1.5rem 1.75rem 1.625rem; }
 .hd-seal::before, .hd-seal::after {
   clip-path: polygon(50% 0%, 56.4% 5.5%, 64.1% 2%, 68.7% 9.1%, 77% 7.9%, 79.5% 16%, 87.8% 17.3%, 87.9% 25.7%, 95.5% 29.2%, 93.2% 37.3%, 99.5% 42.9%, 95% 50%, 99.5% 57.1%, 93.2% 62.7%, 95.5% 70.8%, 87.9% 74.3%, 87.8% 82.7%, 79.5% 84%, 77% 92.1%, 68.7% 90.9%, 64.1% 98%, 56.4% 94.5%, 50% 100%, 43.6% 94.5%, 35.9% 98%, 31.3% 90.9%, 23% 92.1%, 20.5% 84%, 12.2% 82.7%, 12.1% 74.3%, 4.5% 70.8%, 6.8% 62.7%, .5% 57.1%, 5% 50%, .5% 42.9%, 6.8% 37.3%, 4.5% 29.2%, 12.1% 25.7%, 12.2% 17.3%, 20.5% 16%, 23% 7.9%, 31.3% 9.1%, 35.9% 2%, 43.6% 5.5%);
 }
-.hd-seal::before { inset: -6px -7px; }
+.hd-seal::before { inset: -.375rem -.4375rem; }
 
 /* ================= paper sheets ================= */
-.sheets { max-width: 880px; margin: 0 auto; }
+.sheets { margin: 0; }
 .sheet {
   position: relative;
   container-type: inline-size;
-  margin-top: 96px;
+  margin-top: 6rem;
   background: var(--sheet);
   border-radius: 6px;
-  padding: 62px clamp(20px, 5vw, 52px) clamp(30px, 4vw, 44px);
+  padding: 3.875rem clamp(20px, 5vw, 3.25rem) clamp(30px, 4vw, 2.75rem);
   box-shadow: 0 0 0 1px var(--sheet-edge), 0 22px 40px -26px var(--sheet-shadow);
 }
 .sheet::before {
   /* washi tape holding the sheet down */
-  content: ""; position: absolute; top: -15px; right: clamp(24px, 8%, 70px);
-  width: 128px; height: 30px; transform: rotate(5deg);
+  content: ""; position: absolute; top: -.9375rem; right: clamp(24px, 8%, 4.375rem);
+  width: 8rem; height: 1.875rem; transform: rotate(5deg);
   clip-path: polygon(0 0, 100% 0, 97% 20%, 100% 40%, 97% 60%, 100% 80%, 97% 100%, 0 100%, 3% 80%, 0 60%, 3% 40%, 0 20%);
   background: var(--tape); opacity: .9;
 }
@@ -568,14 +634,14 @@ a:hover { text-decoration-color: currentColor; }
 
 /* About: EN / 中文 as two stickers; the pressed one is pressed flat into the sheet */
 .lang {
-  position: absolute; top: -20px; right: clamp(14px, 4vw, 36px);
-  display: flex; gap: 12px; align-items: center;
+  position: absolute; top: -1.25rem; right: clamp(14px, 4vw, 2.25rem);
+  display: flex; gap: .75rem; align-items: center;
 }
 .lang button {
   --r: 3deg;
   font: 700 .875rem/1 var(--mono); color: var(--s-ink);
-  background: #ffffff; border: 0; border-radius: 10px;
-  min-height: 40px; min-width: 54px; padding: 10px 12px;
+  background: #ffffff; border: 0; border-radius: .625rem;
+  min-height: 2.5rem; min-width: 3.375rem; padding: .625rem .75rem;
   box-shadow: 0 0 0 4px var(--cut), 0 7px 12px -4px var(--drop);
   cursor: pointer;
   transform: rotate(var(--r)) translateY(var(--lift, 0px));
@@ -593,19 +659,19 @@ a:hover { text-decoration-color: currentColor; }
 }
 
 .bio p { max-width: 64ch; text-wrap: pretty; }
-.bio p + p { margin-top: 14px; }
+.bio p + p { margin-top: .875rem; }
 .bio [lang="zh-CN"] p { line-height: 1.95; font-size: 1.0625rem; }
 
 /* lists */
 .list { list-style: none; margin: 0; padding: 0; }
 .list > li {
-  display: grid; grid-template-columns: 118px minmax(0, 1fr); column-gap: 26px;
-  padding: 18px 0;
+  display: grid; grid-template-columns: 7.375rem minmax(0, 1fr); column-gap: 1.625rem;
+  padding: 1.125rem 0;
   border-top: 2px dashed var(--rule);
 }
 .list > li:first-child { border-top: 0; padding-top: 4px; }
 .list > li:last-child { padding-bottom: 0; }
-.list.entries > li { padding: 24px 0; }
+.list.entries > li { padding: 1.5rem 0; }
 .list.entries > li:first-child { padding-top: 6px; }
 .list.entries > li:last-child { padding-bottom: 2px; }
 
@@ -615,7 +681,7 @@ a:hover { text-decoration-color: currentColor; }
   margin-top: 3px;
   font: 700 .8125rem/1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .01em;
   color: var(--s-ink); background: var(--f);
-  padding: 7px 11px 6px; border-radius: 999px;
+  padding: .4375rem .6875rem .375rem; border-radius: 999px;
   box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
   transform: rotate(var(--wr, -2deg));
   white-space: nowrap;
@@ -625,70 +691,101 @@ a:hover { text-decoration-color: currentColor; }
 .list > li > :not(.when) { grid-column: 2; }
 
 /* narrow sheets (phones, two-column desktop): the date tag sits above its entry */
-@container (max-width: 519px) {
+@container (max-width: 30.5em) {
   .list > li { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
   .list > li > :not(.when) { grid-column: 1; }
   .when { margin: 4px 0 0 3px; }
 }
 
 /* stickers that wandered onto the corners of a sheet */
-.corner { position: absolute; z-index: 2; display: block; overflow: visible; width: 64px; height: auto; }
-.c-br { right: -24px; bottom: -28px; }
-.c-bl { left: -26px; bottom: -26px; }
-.s-news .corner { --r: 14deg; width: 58px; }
-.s-exp .corner { --r: -10deg; width: 78px; }
-.s-proj .corner { --r: 9deg; width: 104px; right: -34px; bottom: -34px; }
-.s-edu .corner { --r: 8deg; width: 76px; }
-.clip { position: absolute; z-index: 4; top: -30px; right: clamp(40px, 12%, 96px); width: 28px; height: 76px; transform: rotate(10deg); filter: drop-shadow(0 3px 2px var(--drop)); }
-.rosette { position: absolute; z-index: 4; bottom: -78px; right: clamp(18px, 8%, 56px); width: 92px; --r: 8deg; }
+.corner { position: absolute; z-index: 2; display: block; overflow: visible; width: 4rem; height: auto; }
+.c-br { right: -1.5rem; bottom: -1.75rem; }
+.c-bl { left: -1.625rem; bottom: -1.625rem; }
+.s-news .corner { --r: 14deg; width: 3.625rem; }
+.s-exp .corner { --r: -10deg; width: 4.875rem; }
+.s-proj .corner { --r: -12deg; width: 3.5rem; }
+.s-edu .corner { --r: 8deg; width: 4.75rem; }
+.clip { position: absolute; z-index: 4; top: -1.875rem; right: clamp(40px, 12%, 6rem); width: 1.75rem; height: 4.75rem; transform: rotate(10deg); filter: drop-shadow(0 3px 2px var(--drop)); }
+/* the rosette overlaps only the sheet's bottom padding, so it never touches the last line */
+.rosette { position: absolute; z-index: 4; bottom: -6.25rem; right: clamp(18px, 8%, 3.5rem); width: 5.75rem; --r: 8deg; }
 
 .list p { max-width: 62ch; text-wrap: pretty; }
 .entry h3 { margin: 0; font: 700 1.1875rem/1.3 var(--sans); color: var(--ink); letter-spacing: -.008em; }
 .entry .meta { margin-top: 3px; font-size: .9375rem; color: var(--muted); }
-.entry .desc { margin-top: 9px; font-size: 1rem; line-height: 1.6; max-width: 62ch; text-wrap: pretty; }
-.entry .desc + .desc { margin-top: 6px; }
+.entry .desc { margin-top: .5625rem; font-size: 1rem; line-height: 1.6; max-width: 62ch; text-wrap: pretty; }
+.entry .desc + .desc { margin-top: .375rem; }
 .entry .lab { font-weight: 650; color: var(--ink); }
-.entry .code { margin-top: 14px; }
+.entry .code { margin-top: .875rem; }
 .code a {
   display: inline-flex; align-items: center; gap: 6px;
   font: 600 .8125rem/1 var(--mono); color: #ffffff; text-decoration: none;
-  background: var(--s-ink); padding: 8px 13px 8px 11px; border-radius: 999px;
+  background: var(--s-ink); padding: .5rem .8125rem .5rem .6875rem; border-radius: 999px;
   box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
   transform: rotate(-1.5deg);
   transition: transform .2s ease;
 }
 .code a:hover { transform: rotate(-1.5deg) translateY(-2px); }
-.code a svg { width: 13px; height: 13px; }
+.code a svg { width: .8125rem; height: .8125rem; }
 :root .code a:focus-visible { outline-offset: 6px; }
 
-.foot { max-width: 880px; margin: 76px auto 0; display: flex; align-items: center; gap: 14px; }
+.foot { margin: 4.75rem 0 0; display: flex; align-items: center; gap: .875rem; }
 .foot p { font: 500 .8125rem/1.5 var(--mono); color: var(--muted); }
-.foot svg { width: 34px; height: 34px; flex: none; transform: rotate(12deg); filter: drop-shadow(0 3px 3px var(--drop)); }
+.foot svg { width: 2.125rem; height: 2.125rem; flex: none; transform: rotate(12deg); filter: drop-shadow(0 3px 3px var(--drop)); }
 
-/* ================= wide desktop: two sheets side by side ================= */
+/* ================= laptop and up: the notebook sits right under the lid ================= */
+@media (min-width: 901px) {
+  .nb { margin-top: calc(96 * var(--ul)); }
+}
+
+/* ================= wide desktop: two columns; everything below the lid scales with the width =================
+   The root font size follows --uw, and the sections are sized in rem, so 1500 -> 1920 -> 2560
+   keeps the same composition instead of leaving a fixed-size island in the middle. */
 @media (min-width: 1100px) {
-  .sheets {
-    max-width: 1180px;
-    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: 40px; align-items: start;
+  :root { --uw: clamp(1px, var(--W) / 1240, 1.4516px); }
+  html { font-size: max(100%, 16 * var(--uw)); }
+
+  .nb {
+    padding: 4.5rem 3.75rem 3.25rem 7.375rem;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    column-gap: 4.5rem;
+    align-items: center;
   }
-  .s-about  { grid-column: 1 / 6; }
-  .s-news   { grid-column: 6 / -1; }
-  .s-exp    { grid-column: 1 / 7; }
-  .s-proj   { grid-column: 7 / -1; }
-  .s-edu    { grid-column: 1 / 8; }
-  .s-awards { grid-column: 8 / -1; }
-  .foot { max-width: 1180px; }
+  .nb-paper i { --m: 4.875rem; --rl: 2.25rem; }
+  .holes { left: 1.625rem; }
+  .nb > .hd { left: 6.75rem; }
+  .thesis { font-size: min(4rem, var(--W) * .0516); max-width: none; }
+
+  /* pairs of sheets, split so both come out about the same height (24 columns for the finer
+     Experience / Projects split); they stretch to end level */
+  .sheets {
+    display: grid; grid-template-columns: repeat(24, minmax(0, 1fr));
+    column-gap: 2.5rem; align-items: stretch;
+  }
+  .s-about  { grid-column: 1 / 13; }
+  .s-news   { grid-column: 13 / -1; }
+  .s-exp    { grid-column: 1 / 12; }
+  .s-proj   { grid-column: 12 / -1; }
+  .s-edu    { grid-column: 1 / 15; }
+  .s-awards { grid-column: 15 / -1; }
+  /* news items are one-liners: keep their date tags beside them */
+  .s-news .list > li { grid-template-columns: 5.75rem minmax(0, 1fr); column-gap: 1.25rem; }
+  .s-news .list > li > :not(.when) { grid-column: 2; }
+  .s-news .when { margin: 3px 0 0; }
+  /* Experience and Projects side by side: both keep the date tag above the entry */
+  .s-proj .list > li { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
+  .s-proj .list > li > :not(.when) { grid-column: 1; }
+  .s-proj .when { margin: 4px 0 0 3px; }
+  /* Awards is short; its rosette sits in the free paper at the bottom of the sheet */
+  .rosette { bottom: 1.5rem; right: 2.25rem; width: 6.25rem; }
+}
+/* gutters are wide enough here for corner stickers to hang off the sheets onto the desk */
+@media (min-width: 1320px) {
+  .page { overflow-x: visible; }
 }
 
 /* ================= below wide desktop ================= */
 @media (max-width: 1099px) {
-  .lid { --photo: 268px; --name: clamp(88px, 8vw + 20px, 104px); --padt: 52px; grid-template-rows: auto auto 1fr; }
-  .d-gauss { width: 128px; left: calc(var(--padx) + var(--photo) - 92px); }
-  .d-r3 { width: 92px; }
-  .d-sigma { font-size: 1.0625rem; top: 150px; }
-  .d-star2 { display: none; }
-  .nb { grid-template-columns: minmax(0, 1fr); max-width: 880px; padding-top: 66px; }
+  .nb { grid-template-columns: minmax(0, 1fr); padding-top: 66px; }
   .thesis { max-width: 17ch; }
   .path { margin-top: 48px; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 26px; }
   .stage { grid-template-columns: minmax(0, 1fr); align-items: start; align-content: start; padding-bottom: 0; }
@@ -700,8 +797,9 @@ a:hover { text-decoration-color: currentColor; }
   .qburst { width: 84px; right: 0; top: -14px; }
 }
 
-/* ================= tablet: photo beside the name, motifs in the corners ================= */
+/* ================= tablet: photo beside the name, motifs spread around the edges ================= */
 @media (max-width: 900px) {
+  .laptop { --lr: 28px; --base: 11px; }
   .lid {
     --padx: clamp(24px, 4.4vw, 40px); --padt: 40px; --pt: 0px;
     --photo: clamp(176px, 26vw, 220px);
@@ -712,19 +810,18 @@ a:hover { text-decoration-color: currentColor; }
     column-gap: 26px;
     align-items: center;
     padding-bottom: 40px;
-    border-radius: 28px;
   }
   .photo { align-self: center; }
   .name { align-self: center; padding-top: 10px; }
   .cluster, .links { max-width: calc(100% - 190px); }
   .cluster { margin-top: 28px; }
   .d-gauss { width: 112px; left: auto; right: 3%; top: 16px; }
-  .d-r3 { width: 80px; right: 5%; top: 150px; }
-  .d-sigma { display: none; }
-  .d-ct { width: 100px; left: auto; right: 34px; top: auto; bottom: 150px; }
-  .d-yax { left: auto; right: 150px; top: auto; bottom: 108px; font-size: 1rem; }
+  .d-r3 { width: 80px; right: 3%; top: 128px; }
+  .d-sigma, .d-star2, .d-star1 { display: none; }
+  /* y = Ax fills the band right of the role label; CT and frames keep clear of each other */
+  .d-yax { left: auto; right: 198px; top: calc(var(--padt) + var(--photo) * 1.08 + 34px); bottom: auto; font-size: 1rem; }
+  .d-ct { width: 100px; left: auto; right: 40px; top: auto; bottom: 176px; }
   .d-frames { width: 132px; right: 20px; bottom: 28px; }
-  .d-star1 { right: 168px; bottom: 30px; width: 38px; }
   .tape-b { bottom: 40px; }
 
   .nb { margin-top: 92px; }
@@ -746,50 +843,51 @@ a:hover { text-decoration-color: currentColor; }
 /* ================= phone ================= */
 /* where sheets reach the page edge, corner stickers tuck inside so .page's clip never slices them */
 @media (min-width: 621px) and (max-width: 1319px) {
-  .c-br, .s-proj .c-br { right: 10px; }
+  .c-br { right: 10px; }
   .c-bl { left: 10px; }
 }
-@media (min-width: 1320px) { .s-proj .c-br { right: -18px; } }
 @media (max-width: 620px) {
   body { font-size: 16px; }
   .page { padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
+  .laptop { --lr: 22px; --base: 9px; }
   .lid {
-    --padx: 18px; --padt: 28px;
-    --photo: min(58vw, 250px);
-    --name: clamp(52px, 17.4vw, 76px);
+    --padx: 18px; --padt: 26px;
+    --photo: clamp(140px, min(50vw, 31svh - 64px), 240px);
+    --name: clamp(52px, min(18vw, 8.8svh), 82px);
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "photo" "name" "labels" "links" "deco";
+    grid-template-areas: "photo" "name" "labels" "links";
     padding: var(--padt) var(--padx) 22px;
-    border-radius: 22px;
     justify-items: start;
+    /* tall enough that the fold lands in the notebook's top margin, under its sticker label;
+       spare height opens up the rows rather than moving the photo away from its stickers */
+    min-height: calc(100svh - 159px - env(safe-area-inset-top, 0px));
+    align-content: space-between;
   }
-  .photo { width: var(--photo); margin: 0 0 18px 2px; }
+  .photo { width: var(--photo); margin: 0 0 14px 2px; }
   .name { padding-top: 0; margin-top: -.1em; }
   .cluster, .links { max-width: none; }
-  .cluster { margin-top: 22px; gap: 14px 12px; }
+  .cluster { margin-top: 16px; gap: 12px; }
   .role { font-size: 1rem; }
   .label { padding: 8px 13px 9px; }
   .peel { padding-right: 30px; }
-  .links { gap: 14px 10px; }
+  .links { margin-top: 14px; gap: 12px 10px; }
   .chip { padding: 7px 13px 8px; }
   .chip-mail { font-size: clamp(.75rem, 3.4vw, .875rem); }
-
-  /* motifs beside the photo, the rest as a row of stickers at the bottom of the lid */
-  .d-gauss { width: clamp(84px, 24vw, 112px); right: 4%; top: 24px; }
-  .d-r3 { display: block; width: clamp(66px, 18vw, 84px); right: 7%; top: calc(var(--padt) + var(--photo) * .55); }
-  .deco-b {
-    position: static; grid-area: deco; justify-self: stretch;
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-    margin-top: 26px; padding: 0 2px;
+  /* GitHub as an icon chip, so it shares a row with the e-mail chip */
+  .chip-gh { padding: 7px 10px 8px; }
+  .chip-gh svg { width: 1.25em; height: 1.25em; }
+  .chip-gh .gh-t {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
   }
-  .deco-b .d { position: relative; inset: auto; }
-  .d-ct { width: 88px; }
-  .d-yax { font-size: .9375rem; }
-  .d-frames { width: 118px; }
-  .d-star1 { display: none; }
+
+  /* gauss and R3 beside the photo; the bottom row of motifs is dropped, since the same
+     stickers start the research path right below */
+  .d-gauss { width: clamp(88px, 25vw, 116px); right: 6%; top: 22px; }
+  .d-r3 { display: block; width: clamp(60px, 17vw, 80px); right: auto; left: calc(var(--padx) + var(--photo) + 22px); top: calc(var(--padt) + var(--photo) * .5); }
+  .deco-b { display: none; }
   .tape-a { width: 140px; left: -40px; top: 16px; }
-  .tape-b { width: 140px; bottom: 130px; }
-  .hinge { height: 9px; }
+  .tape-b { width: 116px; bottom: 6px; right: -60px; }
   .reset { right: 8px; }
 
   .nb { margin-top: 84px; padding: 62px 18px 36px 52px; }
@@ -800,54 +898,48 @@ a:hover { text-decoration-color: currentColor; }
   .thesis { font-size: clamp(2rem, 9.4vw, 2.75rem); }
   .qburst { width: 64px; right: -6px; top: -48px; }
   .path { margin-top: 36px; }
-  .stage { grid-template-columns: 92px minmax(0, 1fr); column-gap: 16px; padding-bottom: 28px; }
-  .stage-art { width: 92px; height: 76px; }
-  .stage-art svg { width: 88px; height: 70px; }
-  .stage:nth-child(2) .stage-art svg { width: 68px; }
-  .num { width: 28px; height: 28px; font-size: .6875rem; left: -10px; top: -8px; }
-  .stage:not(:last-child)::after { left: 43px; top: 84px; }
-  .stage h3 { font-size: 1.1875rem; }
-  .stage p { font-size: .9375rem; }
+  /* one phone layout for the path: a small sticker column, captions keep their width */
+  .stage { grid-template-columns: 70px minmax(0, 1fr); column-gap: 14px; padding-bottom: 24px; }
+  .stage-art { width: 70px; height: 58px; }
+  .stage-art svg { width: 68px; height: 54px; }
+  .stage:nth-child(2) .stage-art svg { width: 54px; }
+  .num { width: 26px; height: 26px; font-size: .625rem; left: -12px; top: -10px; }
+  .stage:not(:last-child)::after { left: 32px; top: 64px; }
+  .stage h3 { font-size: 1.125rem; }
+  .stage p { font-size: .9375rem; margin-top: 4px; }
 
   .sheet { margin-top: 84px; padding-top: 54px; }
   .sheet::before { width: 96px; height: 26px; }
+  .s-exp::before { top: -13px; bottom: auto; right: 10%; transform: rotate(4deg); }
   .list.entries > li { padding: 22px 0; }
   .entry h3 { font-size: 1.125rem; }
   .entry .desc { font-size: .96875rem; }
-  .c-br, .s-proj .c-br { right: 10px; bottom: -30px; }
-  .c-bl { left: 10px; bottom: -30px; }
+  /* corner stickers all hang on the right, away from the next sheet's heading on the left */
+  .c-br, .c-bl { left: auto; right: 10px; bottom: -26px; }
   .s-news .corner { width: 44px; }
-  .s-exp .corner { width: 58px; }
-  .s-proj .corner { width: 78px; bottom: -34px; }
-  .s-edu .corner { width: 58px; }
-  .rosette { width: 72px; bottom: -62px; }
+  .s-exp .corner { width: 52px; }
+  .s-proj .corner { width: 44px; }
+  .s-edu .corner { width: 50px; }
+  .clip { right: 32%; }
+  .rosette { width: 72px; bottom: -70px; }
   .hd-burst { top: -34px; padding: 20px 24px 22px; }
   .hd-seal { top: -32px; padding: 20px 24px 22px; }
 }
 @media (max-width: 420px) {
   .role { font-size: .9375rem; letter-spacing: -.01em; padding-left: 12px; padding-right: 28px; }
-  .d-ct { width: 78px; }
-  .d-frames { width: 104px; }
 }
 @media (max-width: 360px) {
   .lid { --padx: 14px; }
   .hd { font-size: 1.25rem; padding-left: 16px; padding-right: 16px; }
   .hd-ticket { padding-left: 32px; padding-right: 18px; }
-  .deco-b { justify-content: space-evenly; }
   .role { font-size: .875rem; }
   .affil { font-size: .875rem; }
-  .d-yax { font-size: .8125rem; padding: 8px 10px 9px; }
-  .d-ct { width: 70px; }
-  .d-frames { width: 94px; }
+  .chip-mail { font-size: .75rem; }
   .lang { gap: 8px; }
   .nb { padding-left: 44px; padding-right: 14px; }
   .nb-paper i { --m: 32px; }
   .holes { left: 9px; }
   .holes i { width: 12px; height: 12px; }
-  /* trajectory: the sticker sits above its caption so titles keep their width */
-  .stage { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
-  .stage-art { margin-left: 4px; }
-  .stage:not(:last-child)::after { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -858,6 +950,8 @@ a:hover { text-decoration-color: currentColor; }
   .w { -webkit-text-stroke: 0; }
   .w::before { display: none; }
 }
+/* narrow tablets: the lid is too narrow for y = Ax beside the labels */
+@media (min-width: 621px) and (max-width: 729px) { .d-yax { display: none; } }
 </style>
 </head>
 <body>
@@ -993,10 +1087,12 @@ a:hover { text-decoration-color: currentColor; }
 <div class="page">
 
   <header class="hero">
+   <div class="laptop">
     <div class="lid" id="lid" tabindex="-1">
       <span class="tape tape-a" aria-hidden="true"></span>
       <span class="tape tape-b" aria-hidden="true"></span>
 
+     <div class="lid-in">
       <div class="photo stk" data-drag>
         <img src="avatar-sticker.webp" alt="Xiangyi (Bruni) Liu" width="760" height="760" draggable="false">
       </div>
@@ -1012,16 +1108,19 @@ a:hover { text-decoration-color: currentColor; }
       </div>
 
       <ul class="links">
-        <li><a class="chip chip-gh stk" href="https://github.com/BruniLiu"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></li>
+        <li><a class="chip chip-gh stk" href="https://github.com/BruniLiu"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span class="gh-t">GitHub</span></a></li>
         <li><a class="chip chip-mail stk" href="mailto:20242802115@smail.lnu.edu.cn">20242802115@smail.lnu.edu.cn</a></li>
         <li class="slot">Google Scholar · coming soon</li>
       </ul>
 
       <div class="deco deco-a" aria-hidden="true">
         <svg class="d d-gauss stk" data-drag viewBox="0 0 150 116" aria-hidden="true" focusable="false"><use href="#s-gauss"/></svg>
-        <svg class="d d-r3 stk" data-drag viewBox="0 0 120 104" aria-hidden="true" focusable="false"><use href="#s-r3"/></svg>
         <span class="d d-sigma f stk" data-drag aria-hidden="true">Σ = RSS<sup>T</sup>R<sup>T</sup></span>
         <svg class="d d-star2 stk" data-drag viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star-pink"/></svg>
+      </div>
+     </div>
+      <div class="deco deco-c" aria-hidden="true">
+        <svg class="d d-r3 stk" data-drag viewBox="0 0 120 104" aria-hidden="true" focusable="false"><use href="#s-r3"/></svg>
       </div>
       <div class="deco deco-b" aria-hidden="true">
         <svg class="d d-ct stk" data-drag viewBox="0 0 120 120" aria-hidden="true" focusable="false"><use href="#s-ct"/></svg>
@@ -1032,6 +1131,7 @@ a:hover { text-decoration-color: currentColor; }
     </div>
     <div class="hinge" aria-hidden="true"></div>
     <button class="reset" type="button" hidden>↺ Reset stickers</button>
+   </div>
   </header>
 
   <main>
@@ -1133,7 +1233,7 @@ a:hover { text-decoration-color: currentColor; }
 
       <section class="sheet s-proj t-check" aria-labelledby="h-proj">
         <h2 class="hd hd-label" id="h-proj">Projects</h2>
-        <svg class="corner c-br stk" viewBox="0 0 150 116" aria-hidden="true" focusable="false"><use href="#s-gauss"/></svg>
+        <svg class="corner c-br stk" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star"/></svg>
         <ul class="list entries">
           <li id="fm-topofreeze">
             <span class="when">2025.10–04</span>

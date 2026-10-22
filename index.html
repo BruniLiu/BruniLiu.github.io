@@ -6,77 +6,111 @@
 <title>Xiangyi (Bruni) Liu</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Xiangyi (Bruni) Liu — undergraduate researcher at Liaoning University working on 3D representation, sparse-view CT reconstruction and world models.">
+<meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
-<!-- Chinese serif only for the three characters of the name (刘香邑); the Chinese bio uses the system CJK sans. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&text=%E5%88%98%E9%A6%99%E9%82%91&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<!-- Blocky Chinese face for the name seal, subset to the three characters it sets: 刘香邑. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&text=%E5%88%98%E9%A6%99%E9%82%91&display=swap">
 <style>
 /*
-  Layout: one aligned grid. A narrow margin column (portrait, dates, statuses, the
-  language switch) hangs to the left of a single reading column, so every line of
-  content shares one left edge and one right edge. Collapses to one column on phones.
-  Subject detail: the research trajectory is drawn as three small figures
-  (anisotropic Gaussians, a sparse-view CT scan of a phantom, frames held in memory)
-  on a time axis. Palette is a cool, radiograph-like grey with one contrast-agent blue.
+  "Laptop lid": the masthead is a laptop lid covered in die-cut stickers (her photo,
+  her name as chunky lettering with a seal, research motifs and formulas). Below, the
+  research question sits on a torn notebook page and the rest on taped paper sheets
+  on a graph-paper desk. Section names are die-cut stickers of different shapes; dates
+  are small printed tags. Palette comes from the photo: plush blue, lip pink, plus
+  lemon and ink. Sticker colours are printed colours, so they stay the same in light
+  and dark; only the desk and the paper change.
 */
+@property --p { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
 :root {
-  --bg: #f5f7f8;
-  --surface: #e9edf0;
-  --fg: #121920;
-  --fg-2: #3b4652;
-  --text: #1e2731;
-  --muted: #55606c;
-  --faint: #848e99;
-  --rule: #d8dee4;
-  --axis: #aab4be;
-  --accent: #0b5a78;
-  --accent-soft: #d6e7ee;
-  --link-line: #9cc0cf;
-  --glyph-fill: rgba(11, 90, 120, .13);
+  /* printed sticker colours (theme independent) */
+  --blue: #9fd6ef;
+  --blue-2: #5aa9e0;
+  --cobalt: #2559c8;
+  --pink: #ff9cc3;
+  --pink-hot: #ef3f87;
+  --seal: #d42d68;
+  --lemon: #ffe27a;
+  --s-ink: #131a30;
+  --lid: #18203a;
+  --lid-hi: #28345a;
 
-  --display: "Newsreader", "Noto Serif SC", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
-  --sans: "IBM Plex Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", monospace;
-  --zh-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  /* desk + paper */
+  --desk: #e9f2f9;
+  --grid: rgba(37, 89, 200, .075);
+  --sheet: #ffffff;
+  --sheet-edge: rgba(19, 26, 48, .07);
+  --sheet-shadow: rgba(19, 30, 60, .38);
+  --ruled: rgba(37, 89, 200, .09);
+  --margin-line: rgba(239, 63, 135, .45);
+  --ink: #131a30;
+  --text: #283149;
+  --muted: #56617a;
+  --rule: #c9d5e3;
+  --link: #1f56c9;
+  --link-line: rgba(31, 86, 201, .35);
+  --cut: #ffffff;
+  --keyline: rgba(19, 26, 48, .14);
+  --hard: rgba(19, 26, 48, .2);
+  --drop: rgba(12, 18, 38, .34);
+  --hinge: #0e1426;
 
-  --mcol: 164px;
-  --gap: 48px;
-  --measure: 688px;
-  --prose: 36em;   /* ~65–72 characters per line in the body sans */
+  --display: "Bagel Fat One", "Arial Rounded MT Bold", "Arial Black", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --sans: "Bricolage Grotesque", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+  --zh-seal: "ZCOOL QingKe HuangYou", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", sans-serif;
+
+  /* fallback die-cut ring, only used where -webkit-text-stroke is unsupported */
+  --ring: 0.085em 0 0 var(--cut), 0.074em 0.042em 0 var(--cut), 0.043em 0.074em 0 var(--cut), 0 0.085em 0 var(--cut), -0.043em 0.074em 0 var(--cut), -0.074em 0.042em 0 var(--cut), -0.085em 0 0 var(--cut), -0.074em -0.042em 0 var(--cut), -0.043em -0.074em 0 var(--cut), 0 -0.085em 0 var(--cut), 0.043em -0.074em 0 var(--cut), 0.074em -0.043em 0 var(--cut);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b0f13;
-    --surface: #151b21;
-    --fg: #e6ebef;
-    --fg-2: #b6c0ca;
-    --text: #d3dae1;
-    --muted: #96a2ae;
-    --faint: #5f6b78;
-    --rule: #212a32;
-    --axis: #3b4651;
-    --accent: #7fc6df;
-    --accent-soft: #13303c;
-    --link-line: #3d6878;
-    --glyph-fill: rgba(127, 198, 223, .14);
+    --desk: #0b1120;
+    --grid: rgba(159, 214, 239, .055);
+    --sheet: #141c31;
+    --sheet-edge: rgba(255, 255, 255, .07);
+    --sheet-shadow: rgba(0, 0, 0, .7);
+    --ruled: rgba(159, 214, 239, .07);
+    --margin-line: rgba(255, 156, 195, .32);
+    --ink: #f0f4fb;
+    --text: #d6deeb;
+    --muted: #9ba8bf;
+    --rule: #2a3550;
+    --link: #8fc6ff;
+    --link-line: rgba(143, 198, 255, .4);
+    --cut: #f2f6fb;
+    --keyline: rgba(255, 255, 255, 0);
+    --hard: rgba(0, 0, 0, .5);
+    --drop: rgba(0, 0, 0, .5);
+    --lid: #1c2745;
+    --lid-hi: #2c3a63;
+    --hinge: #050912;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0b0f13;
-  --surface: #151b21;
-  --fg: #e6ebef;
-  --fg-2: #b6c0ca;
-  --text: #d3dae1;
-  --muted: #96a2ae;
-  --faint: #5f6b78;
-  --rule: #212a32;
-  --axis: #3b4651;
-  --accent: #7fc6df;
-  --accent-soft: #13303c;
-  --link-line: #3d6878;
-  --glyph-fill: rgba(127, 198, 223, .14);
+  --desk: #0b1120;
+  --grid: rgba(159, 214, 239, .055);
+  --sheet: #141c31;
+  --sheet-edge: rgba(255, 255, 255, .07);
+  --sheet-shadow: rgba(0, 0, 0, .7);
+  --ruled: rgba(159, 214, 239, .07);
+  --margin-line: rgba(255, 156, 195, .32);
+  --ink: #f0f4fb;
+  --text: #d6deeb;
+  --muted: #9ba8bf;
+  --rule: #2a3550;
+  --link: #8fc6ff;
+  --link-line: rgba(143, 198, 255, .4);
+  --cut: #f2f6fb;
+  --keyline: rgba(255, 255, 255, 0);
+  --hard: rgba(0, 0, 0, .5);
+  --drop: rgba(0, 0, 0, .5);
+  --lid: #1c2745;
+  --lid-hi: #2c3a63;
+  --hinge: #050912;
   color-scheme: dark;
 }
 
@@ -85,419 +119,964 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--desk);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
   color: var(--text);
-  font: 400 17px/1.62 var(--sans);
+  font: 400 17px/1.6 var(--sans);
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-@media (min-width: 600px) {
+@media (min-width: 700px) {
   body {
-    padding-left: max(32px, env(safe-area-inset-left, 0px));
-    padding-right: max(32px, env(safe-area-inset-right, 0px));
+    padding-left: max(28px, env(safe-area-inset-left, 0px));
+    padding-right: max(28px, env(safe-area-inset-right, 0px));
   }
 }
-img { max-width: 100%; }
+img, svg { max-width: 100%; }
 [hidden] { display: none !important; }
 p { margin: 0; }
 .vh {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
 }
-
-a {
-  color: var(--accent);
-  text-decoration: underline;
-  text-decoration-color: var(--link-line);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
+a { color: var(--link); text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 a:hover { text-decoration-color: currentColor; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
-::selection { background: var(--accent-soft); color: var(--fg); }
+:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--pink); color: var(--s-ink); }
 
-/* ---------- grid ---------- */
 .page {
-  max-width: calc(var(--mcol) + var(--gap) + var(--measure));
-  margin: 0 auto;
-  padding-block: calc(72px + env(safe-area-inset-top, 0px)) 64px;
-}
-.row {
-  display: grid;
-  grid-template-columns: var(--mcol) minmax(0, 1fr);
-  column-gap: var(--gap);
-  align-items: baseline;
-}
-.key {
-  font: 400 .8125rem/1.5 var(--mono);
-  color: var(--muted);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: .01em;
+  max-width: 1240px; margin: 0 auto;
+  padding-block: calc(28px + env(safe-area-inset-top, 0px)) 56px;
+  overflow-x: hidden; overflow-x: clip;
 }
 
-/* ---------- masthead ---------- */
-.masthead { align-items: stretch; }
-.portrait {
-  width: 100%;
-  aspect-ratio: 1;
-  align-self: start;
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--surface);
+/* ================= stickers: shared behaviour ================= */
+.stk {
+  --r: 0deg; --dx: 0px; --dy: 0px; --lift: 0px; --s: 1;
   position: relative;
+  transform: translate(var(--dx), var(--dy)) translateY(var(--lift)) rotate(var(--r)) scale(var(--s));
+  filter: drop-shadow(0 1.5px 0 var(--drop)) drop-shadow(0 7px 8px var(--drop));
 }
-.portrait::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
+@media (prefers-reduced-motion: no-preference) {
+  .stk { transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, --p .3s ease; }
+  .lid .stk { animation: slap .55s cubic-bezier(.2, 1.5, .4, 1) backwards; animation-delay: calc(var(--i, 0) * 55ms + 60ms); }
+  @keyframes slap {
+    from { opacity: 0; transform: translate(var(--dx), var(--dy)) translateY(-18px) rotate(calc(var(--r) + 8deg)) scale(1.2); }
+    55% { opacity: 1; }
+  }
+  @media (hover: hover) {
+    .stk:hover { --lift: -5px; --s: 1.04; filter: drop-shadow(0 3px 1px var(--drop)) drop-shadow(0 18px 16px var(--drop)); }
+  }
+  /* once everything is stuck down, the photo gives one small wiggle: it can be peeled off */
+  @media (hover: hover) and (pointer: fine) {
+    .lid .photo.stk {
+      animation: slap .55s cubic-bezier(.2, 1.5, .4, 1) 60ms backwards, wiggle .9s ease-in-out 1.6s;
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); }
+      22% { transform: translate(var(--dx), var(--dy)) translateY(-8px) rotate(calc(var(--r) + 3.5deg)) scale(1.03); }
+      48% { transform: translate(var(--dx), var(--dy)) translateY(-4px) rotate(calc(var(--r) - 3deg)) scale(1.02); }
+      72% { transform: translate(var(--dx), var(--dy)) rotate(calc(var(--r) + 1.2deg)); }
+    }
+  }
+}
+@media (hover: hover) { .stk.peel:hover { --p: 22px; } }
+[data-drag] { touch-action: auto; }
+@media (hover: hover) and (pointer: fine) {
+  [data-drag] { cursor: grab; -webkit-user-select: none; user-select: none; }
+}
+.stk.dragging {
+  cursor: grabbing; transition: filter .2s ease !important; --s: 1.07;
+  filter: drop-shadow(0 4px 2px var(--drop)) drop-shadow(0 26px 22px var(--drop));
+}
+
+/* label sticker: white die-cut border around a printed colour */
+.label {
+  display: inline-block; margin: 0;
+  padding: 9px 16px 10px;
+  border: 5px solid var(--cut); border-radius: 12px;
+  background: var(--f); color: var(--s-ink);
+  font: 700 1rem/1.3 var(--sans);
+}
+/* peel corner: both layers are cut on the same fold line; ::after is the flap folded back.
+   The label keeps empty room on the right so the flap never folds over the text. */
+.peel {
+  padding-right: 34px;
+  border-color: transparent;
+  background:
+    linear-gradient(-45deg, transparent calc(var(--p) * .7071 - 7.07px), var(--f) 0) padding-box,
+    linear-gradient(-45deg, transparent calc(var(--p) * .7071), var(--cut) 0) border-box;
+}
+.peel::after {
+  content: ""; position: absolute; right: -5px; bottom: -5px;
+  width: var(--p); height: var(--p);
+  background: linear-gradient(135deg, #ffffff 0%, #e9edf3 30%, #c4ccda 49.5%, transparent 50.5%);
+  border-top-left-radius: 5px;
+  filter: drop-shadow(-1.5px -1.5px 1.5px rgba(10, 16, 34, .28));
   pointer-events: none;
 }
-/* Slight zoom, anchored so the plush face sits in the middle of the square. */
-.portrait img {
-  width: 100%; height: 100%; display: block;
-  object-fit: cover; object-position: 50% 50%;
-}
-.ident {
-  display: flex; flex-direction: column; justify-content: space-between; gap: 18px;
-  min-width: 0;
-}
-h1 {
-  margin: -6px 0 0;
-  font: 500 clamp(2rem, 1.35rem + 2.1vw, 2.75rem)/1.1 var(--display);
-  letter-spacing: -.012em;
-  color: var(--fg);
-  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .4em; row-gap: 2px;
-}
-h1 .en { white-space: nowrap; }
-h1 .zh {
-  font: 500 .5em/1 var(--zh-serif);
-  letter-spacing: .14em;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.role { margin-top: 12px; font-size: 1.0625rem; color: var(--fg); }
-.role .sep { color: var(--faint); margin: 0 .45em; }
-.role .br-m { display: none; }
-.affil { margin-top: 8px; font-size: .875rem; line-height: 1.5; color: var(--muted); }
-.affil span { display: block; }
-.affil .affil-lab { color: var(--fg-2); text-wrap: balance; }
-.links {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 4px 22px;
-  font: 400 .8125rem/1.6 var(--mono);
-}
-.links .pending { color: var(--muted); }
-.links a { overflow-wrap: anywhere; }
-.entry .code { margin-top: 5px; font: 400 .75rem/1.5 var(--mono); }
 
-/* ---------- research question + trajectory ---------- */
-.research { margin-top: 88px; }
-.research > .key { margin: 0; padding-top: .2em; }
-.thesis {
-  font: 400 clamp(1.75rem, 1.2rem + 1.9vw, 2.5rem)/1.16 var(--display);
-  letter-spacing: -.014em;
-  color: var(--fg);
-  text-wrap: balance;
-  max-width: 24ch;
+/* ================= hero: the laptop lid ================= */
+.hero { position: relative; }
+.lid {
+  --padx: clamp(40px, 5vw, 72px);
+  --padt: 58px;
+  --photo: clamp(300px, 27.5vw, 380px);
+  --pt: 34px; /* photo drop from the top of the lid */
+  --name: clamp(118px, 6vw + 52px, 142px);
+  position: relative; overflow: hidden;
+  border-radius: 34px;
+  background:
+    radial-gradient(90% 70% at 18% 0%, var(--lid-hi), transparent 70%),
+    linear-gradient(160deg, var(--lid-hi) -20%, var(--lid) 45%);
+  background-color: var(--lid);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07), inset 0 2px 0 rgba(255, 255, 255, .06), 0 30px 60px -30px rgba(10, 16, 34, .55);
+  display: grid;
+  grid-template-columns: var(--photo) minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas: "photo name" "photo labels" "photo links";
+  column-gap: clamp(32px, 3.6vw, 52px);
+  padding: var(--padt) var(--padx) 64px;
+  isolation: isolate;
 }
-.thesis em { font-style: italic; color: var(--accent); }
+.lid:focus { outline: none; }
+.hinge {
+  width: 34%; height: 12px; margin: 0 auto;
+  background: var(--hinge); border-radius: 0 0 14px 14px;
+  opacity: .9;
+}
+
+.photo { grid-area: photo; align-self: start; width: 100%; margin-top: var(--pt); --r: -5deg; --i: 0; z-index: 2; }
+.photo img { display: block; width: 100%; height: auto; -webkit-user-drag: none; pointer-events: none; }
+
+/* --- name: chunky die-cut lettering. Front layer = printed colour + ink keyline,
+       back layer (::before) = the white die-cut margin, both drawn with text-stroke. --- */
+.name {
+  grid-area: name; position: relative; z-index: 3;
+  margin: 0; min-width: 0;
+  font: 400 var(--name)/1 var(--display);
+  letter-spacing: .005em;
+}
+.name .l1, .name .l2 { display: block; white-space: nowrap; }
+.name .l2 { margin-top: .04em; }
+.w {
+  display: inline-block; position: relative; isolation: isolate;
+  padding: 0 .06em;
+  color: var(--f);
+  -webkit-text-stroke: .05em var(--s-ink);
+  paint-order: stroke fill;
+  vertical-align: middle;
+}
+.w::before {
+  content: attr(data-t);
+  content: attr(data-t) / "";
+  position: absolute; inset: 0; z-index: -1;
+  padding: inherit;
+  color: var(--cut);
+  -webkit-text-stroke: .2em var(--cut);
+  pointer-events: none;
+}
+@supports not (-webkit-text-stroke: 1px) {
+  .w { text-shadow: var(--ring); }
+  .w::before { display: none; }
+}
+.w1 { --f: var(--pink); --r: -4deg; --i: 1; }
+.w2 { --f: var(--blue); --r: -6deg; --i: 2; font-size: .5em; margin-right: .06em; }
+.w3 { --f: var(--lemon); --r: 2.5deg; --i: 3; }
+
+/* 刘香邑 as a vertical seal sticker, pinned to "Liu" */
+.seal {
+  --r: 7deg; --i: 4;
+  display: inline-block;
+  writing-mode: vertical-rl; text-orientation: upright;
+  vertical-align: middle;
+  margin-left: .1em;
+  padding: .42em .34em .46em;
+  font: 400 max(20px, calc(var(--name) * .21))/1 var(--zh-seal);
+  letter-spacing: .08em;
+  color: #ffffff; background: var(--seal);
+  border-radius: .3em;
+  box-shadow: inset 0 0 0 .14em var(--seal), inset 0 0 0 .22em #ffffff, 0 0 0 5px var(--cut);
+}
+
+.cluster {
+  grid-area: labels; position: relative; z-index: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 16px;
+  margin-top: 26px;
+}
+.role { --f: var(--lemon); --r: -2deg; --i: 5; font-size: 1.0625rem; text-wrap: balance; }
+.affil { --f: var(--pink); --r: 1.5deg; --i: 6; font-weight: 600; font-size: .9375rem; line-height: 1.35; }
+.affil span { display: block; }
+
+.links {
+  grid-area: links; align-self: start; position: relative; z-index: 3;
+  list-style: none; margin: 22px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 14px;
+  max-width: 480px; /* Scholar slot always takes its own row, clear of the corner stickers */
+}
+.links li { min-width: 0; max-width: 100%; }
+.chip {
+  display: inline-flex; align-items: center; gap: .45em;
+  max-width: 100%;
+  padding: 8px 16px 9px;
+  border: 4px solid var(--cut); border-radius: 999px;
+  font: 600 .9375rem/1.25 var(--sans);
+  text-decoration: none;
+}
+.chip:hover { text-decoration: none; }
+.chip-gh { background: var(--s-ink); color: #ffffff; --r: -3deg; --i: 7; }
+.chip-gh svg { width: 1.1em; height: 1.1em; flex: none; }
+.chip-mail {
+  background: #ffffff; color: #1f56c9; --r: 1.5deg; --i: 8;
+  font: 600 .875rem/1.3 var(--mono);
+  box-shadow: inset 0 0 0 2px var(--blue);
+  overflow-wrap: anywhere;
+}
+.chip-mail:hover { text-decoration: underline; text-decoration-color: currentColor; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.slot {
+  display: inline-block; padding: 8px 16px 9px;
+  border: 2px dashed rgba(220, 230, 245, .55); border-radius: 999px;
+  color: #c5cfe2; font: 500 .8125rem/1.25 var(--mono);
+  transform: rotate(-1deg);
+}
+.lid :focus-visible { outline-color: var(--lemon); outline-offset: 5px; }
+
+/* decorative stickers on the lid */
+.deco { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.d { position: absolute; display: block; overflow: visible; pointer-events: auto; }
+.f {
+  font: 700 1.25rem/1 var(--mono); color: var(--s-ink); white-space: nowrap;
+  padding: 10px 15px 11px; border-radius: 10px;
+  background: var(--f); border: 4px solid var(--cut);
+}
+.f sup { font-size: .62em; vertical-align: .72em; margin-left: .04em; line-height: 0; }
+.f i { font-style: normal; }
+.d-gauss  { width: 150px; left: calc(var(--padx) + var(--photo) - 104px); top: 12px; --r: 14deg; --i: 9; }
+.d-r3     { width: 108px; right: 3.2%; top: 26px; --r: 11deg; --i: 10; }
+.d-sigma  { --f: var(--lemon); right: 3.6%; top: 168px; --r: 6deg; --i: 11; }
+.d-ct     { width: 124px; left: calc(var(--padx) - 20px); bottom: 62px; --r: -12deg; --i: 12; }
+.d-yax    { --f: var(--pink); left: calc(var(--padx) + 128px); bottom: 34px; --r: -4deg; --i: 13; }
+.d-frames { width: 164px; right: 4%; bottom: 26px; --r: 6deg; --i: 14; }
+.d-star1  { width: 46px; right: calc(4% + 186px); bottom: 34px; --r: -8deg; --i: 15; }
+.d-star2  { width: 40px; left: calc(var(--padx) + var(--photo) - 10px); top: calc(var(--padt) + var(--pt) + var(--photo) * .66); --r: 12deg; --i: 16; }
+.tape {
+  position: absolute; z-index: 1; height: 34px; width: 190px;
+  clip-path: polygon(0 0, 100% 0, 97.5% 20%, 100% 40%, 97.5% 60%, 100% 80%, 97.5% 100%, 0 100%, 2.5% 80%, 0 60%, 2.5% 40%, 0 20%);
+  opacity: .92;
+  pointer-events: none;
+}
+.tape-a { top: 26px; left: -42px; transform: rotate(-38deg); background: repeating-linear-gradient(90deg, rgba(255, 156, 195, .9) 0 10px, rgba(255, 196, 219, .9) 10px 20px); }
+.tape-b { bottom: 54px; right: -52px; transform: rotate(-30deg); background-color: rgba(159, 214, 239, .85); background-image: radial-gradient(rgba(37, 89, 200, .5) 2px, transparent 2.5px); background-size: 12px 12px; }
+
+.reset {
+  position: absolute; z-index: 20; right: 22px; top: calc(100% + 10px);
+  font: 600 .8125rem/1 var(--mono); color: var(--s-ink);
+  background: var(--lemon); border: 3px solid var(--cut); border-radius: 999px;
+  padding: 9px 14px; min-height: 40px; cursor: pointer;
+  box-shadow: 0 6px 12px -4px var(--drop);
+  transform: rotate(-1.5deg);
+}
+.reset:hover { background: #fff0b0; }
+
+/* ================= research question: a torn notebook page ================= */
+.nb {
+  position: relative; isolation: isolate;
+  max-width: 1180px; margin: 104px auto 0;
+  padding: 72px clamp(24px, 4vw, 60px) 52px clamp(62px, 8vw, 118px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  column-gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+.nb-paper { position: absolute; inset: 0; z-index: -1; filter: drop-shadow(0 0 1px var(--sheet-edge)) drop-shadow(0 22px 22px var(--sheet-shadow)); }
+.nb-paper i {
+  position: absolute; inset: 0;
+  --m: clamp(40px, 5.4vw, 78px);
+  background-color: var(--sheet);
+  background-image:
+    linear-gradient(90deg, transparent calc(var(--m) - 1px), var(--margin-line) calc(var(--m) - 1px) calc(var(--m) + 1px), transparent calc(var(--m) + 1px) calc(var(--m) + 5px), var(--margin-line) calc(var(--m) + 5px) calc(var(--m) + 6px), transparent calc(var(--m) + 6px)),
+    repeating-linear-gradient(180deg, transparent 0 35px, var(--ruled) 35px 36px);
+  background-position: 0 0, 0 56px;
+  background-repeat: no-repeat, repeat;
+  clip-path: polygon(0 10px, 2% 2px, 4% 9px, 6% 1px, 8% 8px, 10% 3px, 12% 10px, 14% 2px, 16% 8px, 18% 0, 20% 9px, 22% 3px, 24% 10px, 26% 1px, 28% 7px, 30% 2px, 32% 9px, 34% 0, 36% 8px, 38% 3px, 40% 10px, 42% 2px, 44% 9px, 46% 1px, 48% 8px, 50% 3px, 52% 10px, 54% 0, 56% 8px, 58% 2px, 60% 9px, 62% 1px, 64% 10px, 66% 3px, 68% 8px, 70% 0, 72% 9px, 74% 2px, 76% 10px, 78% 1px, 80% 8px, 82% 3px, 84% 9px, 86% 0, 88% 8px, 90% 2px, 92% 10px, 94% 1px, 96% 8px, 98% 2px, 100% 9px, 100% 100%, 0 100%);
+  border-radius: 0 0 6px 6px;
+}
+.holes { position: absolute; z-index: 0; left: clamp(12px, 1.8vw, 26px); top: 70px; bottom: 40px; display: flex; flex-direction: column; justify-content: space-around; }
+.holes i { display: block; width: 18px; height: 18px; border-radius: 50%; background: var(--desk); box-shadow: inset 0 2px 3px rgba(0, 0, 0, .28); }
+.nb-q { position: relative; min-width: 0; }
+.nb > .hd { left: clamp(56px, 7.4vw, 108px); }
+.thesis {
+  font: 800 clamp(2.25rem, 1.05rem + 3.4vw, 4.25rem)/1.04 var(--sans);
+  font-variation-settings: "opsz" 96;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  max-width: 15ch;
+  text-wrap: balance;
+}
+.thesis em {
+  font-style: normal; color: var(--s-ink);
+  display: inline-block; position: relative; z-index: 0;
+  padding: 0 .14em .04em;
+  transform: rotate(-2deg);
+}
+.thesis em::before {
+  content: ""; position: absolute; inset: .08em -.02em .02em; z-index: -1;
+  background: repeating-linear-gradient(90deg, rgba(255, 156, 195, .95) 0 .22em, rgba(255, 186, 214, .95) .22em .44em);
+  clip-path: polygon(0 0, 100% 0, 98% 20%, 100% 40%, 98% 60%, 100% 80%, 98% 100%, 0 100%, 2% 80%, 0 60%, 2% 40%, 0 20%);
+}
+.qburst { position: absolute; width: 96px; right: -6px; top: -30px; --r: 12deg; z-index: 2; }
 
 .path {
-  list-style: none; margin: 44px 0 0; padding: 0;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 0;
 }
-.stage { display: flex; flex-direction: column; min-width: 0; }
-.glyph {
-  display: block; width: 132px; height: 88px; margin: 0 0 16px -2px;
-  overflow: visible; color: var(--fg);
-}
-.glyph * { vector-effect: non-scaling-stroke; }
-.glyph .ln  { fill: none; stroke: currentColor; stroke-width: 1.25; }
-.glyph .lt  { fill: none; stroke: var(--muted); stroke-width: 1; }
-.glyph .fa  { fill: none; stroke: var(--faint); stroke-width: 1; stroke-dasharray: 2 3; }
-.glyph .ac  { fill: none; stroke: var(--accent); stroke-width: 1.5; }
-.glyph .det { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
-.glyph .ray { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 1.5 3; opacity: .8; }
-.glyph .fill { fill: var(--glyph-fill); }
-.glyph .dot { fill: currentColor; }
-.glyph .adot { fill: var(--accent); }
-.glyph .fr  { fill: var(--bg); stroke-width: 1.1; }
-.glyph .fr1 { stroke: currentColor; }
-.glyph .fr2 { stroke: var(--muted); }
-.glyph .fr3 { stroke: var(--faint); }
-
-.stage-text {
-  flex: 1;
-  display: flex; flex-direction: column; align-items: flex-start;
+.stage {
   position: relative;
-  border-top: 1px solid var(--axis);
-  padding: 20px 28px 0 0;
+  display: grid; grid-template-columns: 132px minmax(0, 1fr); column-gap: 24px;
+  align-items: center;
+  padding-bottom: 26px;
+  min-width: 0;
 }
-.stage-text::before {
-  content: ""; position: absolute; left: 0; top: -4px;
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--fg);
+.stage:last-child { padding-bottom: 0; }
+.stage-art { position: relative; width: 132px; height: 104px; display: grid; place-items: center; }
+.stage-art svg { display: block; width: 124px; height: 96px; overflow: visible; }
+.stage:nth-child(1) .stage-art svg { --r: -6deg; }
+.stage:nth-child(2) .stage-art svg { --r: 5deg; width: 96px; }
+.stage:nth-child(3) .stage-art svg { --r: -3deg; }
+.num {
+  position: absolute; z-index: 2; left: -6px; top: -4px;
+  display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  font: 700 .75rem/1 var(--mono); color: var(--s-ink);
+  background: var(--lemon);
+  box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
+  transform: rotate(-10deg);
 }
-.stage:last-child .stage-text::before {
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
+.stage:nth-child(2) .num { background: var(--blue); transform: rotate(8deg); }
+.stage:nth-child(3) .num { background: var(--pink); }
+.stage:not(:last-child)::after {
+  /* dotted hand-off from one sticker to the next */
+  content: ""; position: absolute; left: 63px; top: 108px; bottom: 2px; width: 6px;
+  background: radial-gradient(circle, var(--muted) 1.6px, transparent 2px) 50% 0 / 6px 11px repeat-y;
+  opacity: .75;
 }
-.stage:last-child .stage-text::after {
-  content: ""; position: absolute; right: 1px; top: -4px;
-  width: 7px; height: 7px;
-  border-top: 1px solid var(--axis); border-right: 1px solid var(--axis);
-  transform: rotate(45deg);
-}
-.stage h3 {
-  margin: 0;
-  min-height: 2.6em; /* two lines, so captions start level (fallback when subgrid is unavailable) */
-  font: 500 1.125rem/1.3 var(--display);
-  color: var(--fg);
-}
+.stage h3 { margin: 0; font: 750 1.3125rem/1.2 var(--sans); color: var(--ink); letter-spacing: -.01em; }
 .now {
-  display: inline-block; margin-left: 8px;
-  font: 500 .6875rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
-  color: var(--accent); vertical-align: .18em;
+  display: inline-block; margin-left: 10px; vertical-align: .14em;
+  font: 700 .6875rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  color: #ffffff; background: var(--pink-hot);
+  padding: 5px 7px 5px 8px; border-radius: 5px;
+  box-shadow: 0 0 0 3px var(--cut), 0 4px 8px -2px var(--drop);
+  transform: rotate(-7deg);
 }
-.stage p { margin: 6px 0 10px; font-size: .9375rem; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
-.stage .see { margin-top: auto; font: 400 .75rem/1.5 var(--mono); white-space: nowrap; }
+.stage p { margin-top: 6px; font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 30ch; text-wrap: pretty; }
+.stage .see { display: inline-block; margin-top: 8px; font: 600 .8125rem/1.2 var(--mono); }
 
-/* Three stages share row tracks, so headings, captions and links line up. */
-@supports (grid-template-rows: subgrid) {
-  @media (min-width: 881px) {
-    .path { grid-template-rows: repeat(4, auto); }
-    .stage { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
-    .stage-text {
-      grid-row: span 3; display: grid; grid-template-rows: subgrid; row-gap: 0;
-      align-items: start; justify-items: start;
-    }
-    .stage h3 { min-height: 0; }
-  }
+/* ================= section headings: die-cut stickers of different shapes ================= */
+.hd {
+  position: absolute; z-index: 3; top: -26px; left: clamp(14px, 4vw, 36px);
+  isolation: isolate;
+  margin: 0; padding: 11px 20px 13px;
+  font: 400 clamp(1.375rem, 1.15rem + .9vw, 1.875rem)/1 var(--display);
+  letter-spacing: .01em; color: var(--s-ink); white-space: nowrap;
+  transform: rotate(var(--r, -2deg));
+  filter: drop-shadow(0 1.5px 0 var(--drop)) drop-shadow(0 8px 9px var(--drop));
 }
-
-/* ---------- sections ---------- */
-.sec { margin-top: 68px; border-top: 1px solid var(--rule); padding-top: 22px; }
-.sec-head { margin-bottom: 24px; align-items: center; }
-.sec-head h2 {
-  grid-column: 2; grid-row: 1; margin: 0;
-  font: 500 1.5rem/1.2 var(--display); letter-spacing: -.006em;
-  color: var(--fg);
+.hd::before, .hd::after { content: ""; position: absolute; z-index: -1; }
+.hd::before { inset: -5px; background: var(--cut); }
+.hd::after { inset: 0; background: var(--f); }
+.hd-label::before { border-radius: 17px; }
+.hd-label::after { border-radius: 12px; }
+/* speech bubble */
+.hd-bubble::before { border-radius: 22px; }
+.hd-bubble::after { border-radius: 17px; }
+.hd-bubble i { position: absolute; z-index: -1; left: 24px; bottom: -15px; width: 26px; height: 20px; }
+.hd-bubble i::before, .hd-bubble i::after { content: ""; position: absolute; clip-path: polygon(0 0, 100% 0, 6% 100%); }
+.hd-bubble i::before { left: -6px; right: -9px; top: -6px; bottom: -8px; background: var(--cut); }
+.hd-bubble i::after { inset: -4px 0 0; background: var(--f); }
+/* starburst */
+.hd-burst { top: -38px; padding: 24px 28px 26px; }
+.hd-burst::before, .hd-burst::after {
+  clip-path: polygon(50% 0%, 58.7% 12%, 71.7% 5%, 74.3% 19.5%, 89.1% 18.8%, 85.1% 33.1%, 98.7% 38.9%, 89% 50%, 98.7% 61.1%, 85.1% 66.9%, 89.1% 81.2%, 74.3% 80.5%, 71.7% 95%, 58.7% 88%, 50% 100%, 41.3% 88%, 28.3% 95%, 25.7% 80.5%, 10.9% 81.2%, 14.9% 66.9%, 1.3% 61.1%, 11% 50%, 1.3% 38.9%, 14.9% 33.1%, 10.9% 18.8%, 25.7% 19.5%, 28.3% 5%, 41.3% 12%);
 }
-.sec-head .key { grid-column: 1; grid-row: 1; justify-self: end; }
+.hd-burst::before { inset: -6px -7px; }
+/* ticket with notches and a perforation */
+.hd-ticket { padding-left: 40px; padding-right: 24px; }
+.hd-ticket::before {
+  border-radius: 13px;
+  -webkit-mask: radial-gradient(circle at 5px 50%, transparent 5px, #000 5.5px) left / 51% 100% no-repeat, radial-gradient(circle at calc(100% - 5px) 50%, transparent 5px, #000 5.5px) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle at 5px 50%, transparent 5px, #000 5.5px) left / 51% 100% no-repeat, radial-gradient(circle at calc(100% - 5px) 50%, transparent 5px, #000 5.5px) right / 51% 100% no-repeat;
+}
+.hd-ticket::after {
+  border-radius: 8px;
+  background-image: linear-gradient(rgba(19, 26, 48, .55) 50%, transparent 50%);
+  background-size: 2.5px 8px; background-repeat: repeat-y; background-position: 25px 0;
+  background-color: var(--f);
+  -webkit-mask: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px) right / 51% 100% no-repeat;
+}
+/* ribbon with notched ends */
+.hd-ribbon { padding-left: 32px; padding-right: 32px; }
+.hd-ribbon::before { clip-path: polygon(0 0, 100% 0, calc(100% - 13px) 50%, 100% 100%, 0 100%, 13px 50%); }
+.hd-ribbon::after { clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%, 16px 50%); }
+/* scalloped seal */
+.hd-seal { top: -36px; padding: 24px 28px 26px; }
+.hd-seal::before, .hd-seal::after {
+  clip-path: polygon(50% 0%, 56.4% 5.5%, 64.1% 2%, 68.7% 9.1%, 77% 7.9%, 79.5% 16%, 87.8% 17.3%, 87.9% 25.7%, 95.5% 29.2%, 93.2% 37.3%, 99.5% 42.9%, 95% 50%, 99.5% 57.1%, 93.2% 62.7%, 95.5% 70.8%, 87.9% 74.3%, 87.8% 82.7%, 79.5% 84%, 77% 92.1%, 68.7% 90.9%, 64.1% 98%, 56.4% 94.5%, 50% 100%, 43.6% 94.5%, 35.9% 98%, 31.3% 90.9%, 23% 92.1%, 20.5% 84%, 12.2% 82.7%, 12.1% 74.3%, 4.5% 70.8%, 6.8% 62.7%, .5% 57.1%, 5% 50%, .5% 42.9%, 6.8% 37.3%, 4.5% 29.2%, 12.1% 25.7%, 12.2% 17.3%, 20.5% 16%, 23% 7.9%, 31.3% 9.1%, 35.9% 2%, 43.6% 5.5%);
+}
+.hd-seal::before { inset: -6px -7px; }
 
+/* ================= paper sheets ================= */
+.sheets { max-width: 880px; margin: 0 auto; }
+.sheet {
+  position: relative;
+  container-type: inline-size;
+  margin-top: 96px;
+  background: var(--sheet);
+  border-radius: 6px;
+  padding: 62px clamp(20px, 5vw, 52px) clamp(30px, 4vw, 44px);
+  box-shadow: 0 0 0 1px var(--sheet-edge), 0 22px 40px -26px var(--sheet-shadow);
+}
+.sheet::before {
+  /* washi tape holding the sheet down */
+  content: ""; position: absolute; top: -15px; right: clamp(24px, 8%, 70px);
+  width: 128px; height: 30px; transform: rotate(5deg);
+  clip-path: polygon(0 0, 100% 0, 97% 20%, 100% 40%, 97% 60%, 100% 80%, 97% 100%, 0 100%, 3% 80%, 0 60%, 3% 40%, 0 20%);
+  background: var(--tape); opacity: .9;
+}
+.t-stripe { --tape: repeating-linear-gradient(90deg, rgba(255, 156, 195, .92) 0 9px, rgba(255, 199, 221, .92) 9px 18px); }
+.t-dots   { --tape: radial-gradient(rgba(37, 89, 200, .55) 2px, transparent 2.5px) 0 0 / 11px 11px, rgba(159, 214, 239, .9); }
+.t-lemon  { --tape: repeating-linear-gradient(45deg, rgba(255, 226, 122, .95) 0 7px, rgba(255, 238, 170, .95) 7px 14px); }
+.t-check  { --tape: repeating-conic-gradient(rgba(37, 89, 200, .55) 0 25%, rgba(159, 214, 239, .85) 0 50%) 0 0 / 14px 14px; }
+.t-none::before { display: none; }
+
+.s-about  { --f: var(--blue); --r: -2.5deg; }
+.s-news   { --f: var(--pink); --r: 4deg; }
+.s-exp    { --f: var(--lemon); --r: -1.5deg; }
+.s-proj   { --f: var(--blue); --r: 2.5deg; }
+.s-edu    { --f: var(--pink); --r: -2deg; }
+.s-awards { --f: var(--lemon); --r: 3deg; }
+.s-about::before { top: auto; bottom: -14px; right: auto; left: 30%; transform: rotate(-4deg); }
+.s-exp::before { top: auto; bottom: -13px; right: 18%; transform: rotate(-3deg); }
+
+/* About: EN / 中文 as two stickers; the pressed one is pressed flat into the sheet */
 .lang {
-  display: inline-flex; padding: 2px; gap: 2px;
-  border: 1px solid var(--rule); border-radius: 999px;
+  position: absolute; top: -20px; right: clamp(14px, 4vw, 36px);
+  display: flex; gap: 12px; align-items: center;
 }
 .lang button {
-  font: 500 .75rem/1 var(--mono); color: var(--muted);
-  background: none; border: 1px solid transparent; border-radius: 999px;
-  padding: 5px 10px; min-height: 28px; cursor: pointer;
+  --r: 3deg;
+  font: 700 .875rem/1 var(--mono); color: var(--s-ink);
+  background: #ffffff; border: 0; border-radius: 10px;
+  min-height: 40px; min-width: 54px; padding: 10px 12px;
+  box-shadow: 0 0 0 4px var(--cut), 0 7px 12px -4px var(--drop);
+  cursor: pointer;
+  transform: rotate(var(--r)) translateY(var(--lift, 0px));
+  transition: transform .25s ease, background-color .2s ease, box-shadow .2s ease;
 }
-.lang button:hover { color: var(--fg); }
+.lang button + button { --r: -4deg; }
+.lang button[lang] { font: 700 1rem/1 var(--sans); letter-spacing: .04em; }
+.lang button[aria-pressed="false"] { background: #eef1f6; color: #3d4763; }
+.lang button[aria-pressed="false"]:hover { --lift: -3px; color: var(--s-ink); background: #ffffff; }
 .lang button[aria-pressed="true"] {
-  background: var(--accent-soft); color: var(--accent); border-color: var(--link-line);
+  --r: 0deg; background: var(--pink);
+  transform: translate(2px, 4px);
+  box-shadow: 0 0 0 4px var(--cut), inset 0 2px 3px rgba(19, 26, 48, .28), 0 1px 0 4px var(--keyline);
+  cursor: default;
 }
 
+.bio p { max-width: 64ch; text-wrap: pretty; }
 .bio p + p { margin-top: 14px; }
-.bio [lang="zh-CN"] p { line-height: 1.9; }
-.bio p, .entry .desc, .list.dated > li > p { max-width: var(--prose); text-wrap: pretty; }
+.bio [lang="zh-CN"] p { line-height: 1.95; font-size: 1.0625rem; }
 
-.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
-.list.entries { gap: 28px; }
-.key.status { color: var(--accent); }
-
-.entry h3 {
-  margin: 0;
-  font: 500 1.1875rem/1.32 var(--display);
-  color: var(--fg);
+/* lists */
+.list { list-style: none; margin: 0; padding: 0; }
+.list > li {
+  display: grid; grid-template-columns: 118px minmax(0, 1fr); column-gap: 26px;
+  padding: 18px 0;
+  border-top: 2px dashed var(--rule);
 }
+.list > li:first-child { border-top: 0; padding-top: 4px; }
+.list > li:last-child { padding-bottom: 0; }
+.list.entries > li { padding: 24px 0; }
+.list.entries > li:first-child { padding-top: 6px; }
+.list.entries > li:last-child { padding-bottom: 2px; }
+
+.when {
+  grid-column: 1;
+  justify-self: start; align-self: start;
+  margin-top: 3px;
+  font: 700 .8125rem/1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .01em;
+  color: var(--s-ink); background: var(--f);
+  padding: 7px 11px 6px; border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
+  transform: rotate(var(--wr, -2deg));
+  white-space: nowrap;
+}
+.list > li:nth-child(even) .when { --wr: 1.5deg; }
+.when:empty { display: none; }
+.list > li > :not(.when) { grid-column: 2; }
+
+/* narrow sheets (phones, two-column desktop): the date tag sits above its entry */
+@container (max-width: 519px) {
+  .list > li { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
+  .list > li > :not(.when) { grid-column: 1; }
+  .when { margin: 4px 0 0 3px; }
+}
+
+/* stickers that wandered onto the corners of a sheet */
+.corner { position: absolute; z-index: 2; display: block; overflow: visible; width: 64px; height: auto; }
+.c-br { right: -24px; bottom: -28px; }
+.c-bl { left: -26px; bottom: -26px; }
+.s-news .corner { --r: 14deg; width: 58px; }
+.s-exp .corner { --r: -10deg; width: 78px; }
+.s-proj .corner { --r: 9deg; width: 104px; right: -34px; bottom: -34px; }
+.s-edu .corner { --r: 8deg; width: 76px; }
+.clip { position: absolute; z-index: 4; top: -30px; right: clamp(40px, 12%, 96px); width: 28px; height: 76px; transform: rotate(10deg); filter: drop-shadow(0 3px 2px var(--drop)); }
+.rosette { position: absolute; z-index: 4; bottom: -78px; right: clamp(18px, 8%, 56px); width: 92px; --r: 8deg; }
+
+.list p { max-width: 62ch; text-wrap: pretty; }
+.entry h3 { margin: 0; font: 700 1.1875rem/1.3 var(--sans); color: var(--ink); letter-spacing: -.008em; }
 .entry .meta { margin-top: 3px; font-size: .9375rem; color: var(--muted); }
-.entry .meta b { font-weight: 600; color: var(--fg); }
-.entry .desc { margin-top: 8px; font-size: .9375rem; line-height: 1.6; }
-.entry .desc + .desc { margin-top: 4px; }
-.entry .lab { font-weight: 500; color: var(--fg); }
-.entry .venue { margin-top: 5px; font-size: .9375rem; line-height: 1.5; color: var(--fg-2); }
-
-.foot { margin-top: 72px; border-top: 1px solid var(--rule); padding-top: 18px; }
-.foot p { font: 400 .75rem/1.5 var(--mono); color: var(--muted); }
-
-/* ---------- dark-mode niceties ---------- */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .portrait img { filter: brightness(.9) contrast(1.04); }
-  :root:not([data-theme="light"]) .portrait::after { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.entry .desc { margin-top: 9px; font-size: 1rem; line-height: 1.6; max-width: 62ch; text-wrap: pretty; }
+.entry .desc + .desc { margin-top: 6px; }
+.entry .lab { font-weight: 650; color: var(--ink); }
+.entry .code { margin-top: 14px; }
+.code a {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 600 .8125rem/1 var(--mono); color: #ffffff; text-decoration: none;
+  background: var(--s-ink); padding: 8px 13px 8px 11px; border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--cut), 0 0 0 4px var(--keyline), 2px 3px 0 4px var(--hard);
+  transform: rotate(-1.5deg);
+  transition: transform .2s ease;
 }
-:root[data-theme="dark"] .portrait img { filter: brightness(.9) contrast(1.04); }
-:root[data-theme="dark"] .portrait::after { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.code a:hover { transform: rotate(-1.5deg) translateY(-2px); }
+.code a svg { width: 13px; height: 13px; }
+:root .code a:focus-visible { outline-offset: 6px; }
 
-/* ---------- tablet ---------- */
-@media (max-width: 920px) {
-  :root { --mcol: 140px; --gap: 32px; }
-}
-/* Trajectory stacks vertically below 880px: glyph on the left, text on a vertical axis. */
-@media (max-width: 880px) {
-  .path { grid-template-columns: minmax(0, 1fr); margin-top: 36px; }
-  .stage {
-    display: grid; grid-template-columns: 120px minmax(0, 1fr); column-gap: 20px;
-    align-items: stretch;
+.foot { max-width: 880px; margin: 76px auto 0; display: flex; align-items: center; gap: 14px; }
+.foot p { font: 500 .8125rem/1.5 var(--mono); color: var(--muted); }
+.foot svg { width: 34px; height: 34px; flex: none; transform: rotate(12deg); filter: drop-shadow(0 3px 3px var(--drop)); }
+
+/* ================= wide desktop: two sheets side by side ================= */
+@media (min-width: 1100px) {
+  .sheets {
+    max-width: 1180px;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 40px; align-items: start;
   }
-  .glyph { width: 120px; height: 80px; margin: 0; align-self: start; }
-  .stage-text { border-top: 0; border-left: 1px solid var(--axis); padding: 0 0 30px 20px; }
-  .stage-text::before { left: -4px; top: .55em; }
-  .stage h3 { min-height: 0; }
-  .stage p { margin-bottom: 8px; }
-  .stage:last-child .stage-text { border-left-color: transparent; padding-bottom: 0; }
-  .stage:last-child .stage-text::after { display: none; }
+  .s-about  { grid-column: 1 / 6; }
+  .s-news   { grid-column: 6 / -1; }
+  .s-exp    { grid-column: 1 / 7; }
+  .s-proj   { grid-column: 7 / -1; }
+  .s-edu    { grid-column: 1 / 8; }
+  .s-awards { grid-column: 8 / -1; }
+  .foot { max-width: 1180px; }
 }
 
-/* ---------- phone ---------- */
-@media (max-width: 720px) {
-  .page { padding-block: calc(28px + env(safe-area-inset-top, 0px)) 48px; }
-  .row { grid-template-columns: minmax(0, 1fr); }
-  .key { text-align: left; }
-  .key:empty { display: none; }
+/* ================= below wide desktop ================= */
+@media (max-width: 1099px) {
+  .lid { --photo: 268px; --name: clamp(88px, 8vw + 20px, 104px); --padt: 52px; grid-template-rows: auto auto 1fr; }
+  .d-gauss { width: 128px; left: calc(var(--padx) + var(--photo) - 92px); }
+  .d-r3 { width: 92px; }
+  .d-sigma { font-size: 1.0625rem; top: 150px; }
+  .d-star2 { display: none; }
+  .nb { grid-template-columns: minmax(0, 1fr); max-width: 880px; padding-top: 66px; }
+  .thesis { max-width: 17ch; }
+  .path { margin-top: 48px; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 26px; }
+  .stage { grid-template-columns: minmax(0, 1fr); align-items: start; align-content: start; padding-bottom: 0; }
+  .stage-art { margin-bottom: 14px; }
+  .stage:not(:last-child)::after {
+    left: 146px; right: -14px; top: 46px; bottom: auto; width: auto; height: 6px;
+    background: radial-gradient(circle, var(--muted) 1.6px, transparent 2px) 0 50% / 11px 6px repeat-x;
+  }
+  .qburst { width: 84px; right: 0; top: -14px; }
+}
 
-  .portrait { width: 112px; margin-bottom: 22px; border-radius: 8px; }
-  h1 { margin-top: 0; }
-  .role .sep { display: none; }
-  .role .br-m { display: inline; }
-  .ident { gap: 16px; }
+/* ================= tablet: photo beside the name, motifs in the corners ================= */
+@media (max-width: 900px) {
+  .lid {
+    --padx: clamp(24px, 4.4vw, 40px); --padt: 40px; --pt: 0px;
+    --photo: clamp(176px, 26vw, 220px);
+    --name: clamp(68px, 7.6vw + 16px, 86px);
+    grid-template-columns: var(--photo) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "photo name" "labels labels" "links links";
+    column-gap: 26px;
+    align-items: center;
+    padding-bottom: 40px;
+    border-radius: 28px;
+  }
+  .photo { align-self: center; }
+  .name { align-self: center; padding-top: 10px; }
+  .cluster, .links { max-width: calc(100% - 190px); }
+  .cluster { margin-top: 28px; }
+  .d-gauss { width: 112px; left: auto; right: 3%; top: 16px; }
+  .d-r3 { width: 80px; right: 5%; top: 150px; }
+  .d-sigma { display: none; }
+  .d-ct { width: 100px; left: auto; right: 34px; top: auto; bottom: 150px; }
+  .d-yax { left: auto; right: 150px; top: auto; bottom: 108px; font-size: 1rem; }
+  .d-frames { width: 132px; right: 20px; bottom: 28px; }
+  .d-star1 { right: 168px; bottom: 30px; width: 38px; }
+  .tape-b { bottom: 40px; }
 
-  .research { margin-top: 48px; }
-  .research > .key { margin-bottom: 10px; padding-top: 0; }
+  .nb { margin-top: 92px; }
+  .path { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .stage { grid-template-columns: 132px minmax(0, 1fr); column-gap: 22px; align-items: start; padding-bottom: 30px; }
+  .stage:last-child { padding-bottom: 0; }
+  .stage-art { margin: 0; }
+  .stage:not(:last-child)::after {
+    left: 63px; right: auto; top: 112px; bottom: 4px; width: 6px; height: auto;
+    background: radial-gradient(circle, var(--muted) 1.6px, transparent 2px) 50% 0 / 6px 11px repeat-y;
+  }
+  .stage p { max-width: 34ch; }
+}
 
-  .path { margin-top: 30px; }
-  .stage { grid-template-columns: 102px minmax(0, 1fr); column-gap: 14px; }
-  .glyph { width: 102px; height: 68px; }
-  .stage-text { padding: 0 0 26px 18px; }
+@media (min-width: 621px) and (max-width: 699px) {
+  .d-r3 { display: none; }
+}
 
-  .sec { margin-top: 52px; padding-top: 18px; }
-  .sec-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
-  .list.dated > li > .key { margin-bottom: 2px; }
-  .list { gap: 16px; }
-  .list.entries { gap: 24px; }
-  .foot { margin-top: 56px; }
+/* ================= phone ================= */
+/* where sheets reach the page edge, corner stickers tuck inside so .page's clip never slices them */
+@media (min-width: 621px) and (max-width: 1319px) {
+  .c-br, .s-proj .c-br { right: 10px; }
+  .c-bl { left: 10px; }
+}
+@media (min-width: 1320px) { .s-proj .c-br { right: -18px; } }
+@media (max-width: 620px) {
+  body { font-size: 16px; }
+  .page { padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
+  .lid {
+    --padx: 18px; --padt: 28px;
+    --photo: min(58vw, 250px);
+    --name: clamp(52px, 17.4vw, 76px);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "photo" "name" "labels" "links" "deco";
+    padding: var(--padt) var(--padx) 22px;
+    border-radius: 22px;
+    justify-items: start;
+  }
+  .photo { width: var(--photo); margin: 0 0 18px 2px; }
+  .name { padding-top: 0; margin-top: -.1em; }
+  .cluster, .links { max-width: none; }
+  .cluster { margin-top: 22px; gap: 14px 12px; }
+  .role { font-size: 1rem; }
+  .label { padding: 8px 13px 9px; }
+  .peel { padding-right: 30px; }
+  .links { gap: 14px 10px; }
+  .chip { padding: 7px 13px 8px; }
+  .chip-mail { font-size: clamp(.75rem, 3.4vw, .875rem); }
+
+  /* motifs beside the photo, the rest as a row of stickers at the bottom of the lid */
+  .d-gauss { width: clamp(84px, 24vw, 112px); right: 4%; top: 24px; }
+  .d-r3 { display: block; width: clamp(66px, 18vw, 84px); right: 7%; top: calc(var(--padt) + var(--photo) * .55); }
+  .deco-b {
+    position: static; grid-area: deco; justify-self: stretch;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    margin-top: 26px; padding: 0 2px;
+  }
+  .deco-b .d { position: relative; inset: auto; }
+  .d-ct { width: 88px; }
+  .d-yax { font-size: .9375rem; }
+  .d-frames { width: 118px; }
+  .d-star1 { display: none; }
+  .tape-a { width: 140px; left: -40px; top: 16px; }
+  .tape-b { width: 140px; bottom: 130px; }
+  .hinge { height: 9px; }
+  .reset { right: 8px; }
+
+  .nb { margin-top: 84px; padding: 62px 18px 36px 52px; }
+  .nb-paper i { --m: 38px; }
+  .holes { left: 12px; top: 60px; }
+  .holes i { width: 14px; height: 14px; }
+  .nb > .hd { left: 30px; }
+  .thesis { font-size: clamp(2rem, 9.4vw, 2.75rem); }
+  .qburst { width: 64px; right: -6px; top: -48px; }
+  .path { margin-top: 36px; }
+  .stage { grid-template-columns: 92px minmax(0, 1fr); column-gap: 16px; padding-bottom: 28px; }
+  .stage-art { width: 92px; height: 76px; }
+  .stage-art svg { width: 88px; height: 70px; }
+  .stage:nth-child(2) .stage-art svg { width: 68px; }
+  .num { width: 28px; height: 28px; font-size: .6875rem; left: -10px; top: -8px; }
+  .stage:not(:last-child)::after { left: 43px; top: 84px; }
+  .stage h3 { font-size: 1.1875rem; }
+  .stage p { font-size: .9375rem; }
+
+  .sheet { margin-top: 84px; padding-top: 54px; }
+  .sheet::before { width: 96px; height: 26px; }
+  .list.entries > li { padding: 22px 0; }
+  .entry h3 { font-size: 1.125rem; }
+  .entry .desc { font-size: .96875rem; }
+  .c-br, .s-proj .c-br { right: 10px; bottom: -30px; }
+  .c-bl { left: 10px; bottom: -30px; }
+  .s-news .corner { width: 44px; }
+  .s-exp .corner { width: 58px; }
+  .s-proj .corner { width: 78px; bottom: -34px; }
+  .s-edu .corner { width: 58px; }
+  .rosette { width: 72px; bottom: -62px; }
+  .hd-burst { top: -34px; padding: 20px 24px 22px; }
+  .hd-seal { top: -32px; padding: 20px 24px 22px; }
+}
+@media (max-width: 420px) {
+  .role { font-size: .9375rem; letter-spacing: -.01em; padding-left: 12px; padding-right: 28px; }
+  .d-ct { width: 78px; }
+  .d-frames { width: 104px; }
 }
 @media (max-width: 360px) {
-  .stage { grid-template-columns: 96px minmax(0, 1fr); column-gap: 12px; }
-  .glyph { width: 96px; height: 64px; }
-  .stage-text { padding-left: 16px; }
+  .lid { --padx: 14px; }
+  .hd { font-size: 1.25rem; padding-left: 16px; padding-right: 16px; }
+  .hd-ticket { padding-left: 32px; padding-right: 18px; }
+  .deco-b { justify-content: space-evenly; }
+  .role { font-size: .875rem; }
+  .affil { font-size: .875rem; }
+  .d-yax { font-size: .8125rem; padding: 8px 10px 9px; }
+  .d-ct { width: 70px; }
+  .d-frames { width: 94px; }
+  .lang { gap: 8px; }
+  .nb { padding-left: 44px; padding-right: 14px; }
+  .nb-paper i { --m: 32px; }
+  .holes { left: 9px; }
+  .holes i { width: 12px; height: 12px; }
+  /* trajectory: the sticker sits above its caption so titles keep their width */
+  .stage { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+  .stage-art { margin-left: 4px; }
+  .stage:not(:last-child)::after { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+@media (forced-colors: active) {
+  .label, .chip, .when, .slot, .seal, .f, .hd { border: 2px solid CanvasText; }
+  .w { -webkit-text-stroke: 0; }
+  .w::before { display: none; }
+}
 </style>
 </head>
 <body>
+
+<!-- sticker artwork, drawn once and reused. Each symbol carries its own white die-cut outline. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="g-blue"><stop offset="0" stop-color="#2559c8"/><stop offset=".55" stop-color="#5aa9e0"/><stop offset="1" stop-color="#9fd6ef"/></radialGradient>
+    <radialGradient id="g-pink"><stop offset="0" stop-color="#ef3f87"/><stop offset=".55" stop-color="#ff7fb0"/><stop offset="1" stop-color="#ffc2da"/></radialGradient>
+    <radialGradient id="g-lemon"><stop offset="0" stop-color="#ffb21a"/><stop offset=".55" stop-color="#ffd54a"/><stop offset="1" stop-color="#fff0a8"/></radialGradient>
+
+    <!-- anisotropic Gaussians (3DGS) -->
+    <symbol id="s-gauss" viewBox="0 0 150 116">
+      <g fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round">
+        <ellipse transform="translate(56 66) rotate(-28)" rx="42" ry="21"/>
+        <ellipse transform="translate(103 41) rotate(34)" rx="29" ry="15"/>
+        <ellipse transform="translate(108 86) rotate(-8)" rx="23" ry="13"/>
+      </g>
+      <g stroke="#131a30" stroke-width="3">
+        <ellipse transform="translate(56 66) rotate(-28)" rx="42" ry="21" fill="url(#g-blue)"/>
+        <ellipse transform="translate(103 41) rotate(34)" rx="29" ry="15" fill="url(#g-pink)"/>
+        <ellipse transform="translate(108 86) rotate(-8)" rx="23" ry="13" fill="url(#g-lemon)"/>
+      </g>
+      <g fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="2 4" opacity=".75">
+        <ellipse transform="translate(56 66) rotate(-28)" rx="24" ry="11"/>
+        <ellipse transform="translate(103 41) rotate(34)" rx="16" ry="8"/>
+      </g>
+      <g fill="#131a30"><circle cx="56" cy="66" r="3"/><circle cx="103" cy="41" r="2.6"/><circle cx="108" cy="86" r="2.4"/></g>
+    </symbol>
+
+    <!-- sparse-view CT: a phantom inside a scan disc, three detector arcs -->
+    <symbol id="s-ct" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="58" fill="#fff"/>
+      <circle cx="60" cy="60" r="50" fill="#131a30"/>
+      <g stroke="#ff9cc3" stroke-width="1.6" stroke-dasharray="2 3.5" opacity=".9">
+        <line x1="60" y1="14" x2="60" y2="106"/>
+        <line x1="20.2" y1="83" x2="99.8" y2="37"/>
+        <line x1="20.2" y1="37" x2="99.8" y2="83"/>
+      </g>
+      <ellipse cx="60" cy="60" rx="25" ry="33" fill="#9fd6ef"/>
+      <ellipse cx="60" cy="61" rx="21" ry="28.5" fill="#2b3a63"/>
+      <ellipse transform="translate(52.5 62) rotate(18)" rx="4" ry="10.5" fill="#ff9cc3"/>
+      <ellipse transform="translate(67.5 62) rotate(-18)" rx="5.4" ry="12.5" fill="#ff9cc3"/>
+      <circle cx="60" cy="44" r="3" fill="#ffe27a"/>
+      <circle cx="56" cy="80" r="1.8" fill="#ffe27a"/><circle cx="64" cy="80" r="1.8" fill="#ffe27a"/>
+      <g fill="none" stroke="#ffe27a" stroke-width="5" stroke-linecap="round">
+        <path d="M46 101 Q60 105 74 101"/>
+        <path d="M27 31 Q20 39 18 51"/>
+        <path d="M102 51 Q100 39 93 31"/>
+      </g>
+    </symbol>
+
+    <!-- world models: frames held in memory, a cube in the latest frame -->
+    <symbol id="s-frames" viewBox="0 0 160 124">
+      <g fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round">
+        <rect x="70" y="10" width="76" height="52" rx="7"/>
+        <rect x="42" y="34" width="76" height="52" rx="7"/>
+        <rect x="14" y="58" width="76" height="52" rx="7"/>
+      </g>
+      <g stroke="#131a30" stroke-width="3">
+        <rect x="70" y="10" width="76" height="52" rx="7" fill="#ffe27a"/>
+        <rect x="42" y="34" width="76" height="52" rx="7" fill="#ff9cc3"/>
+        <rect x="14" y="58" width="76" height="52" rx="7" fill="#9fd6ef"/>
+      </g>
+      <g fill="none" stroke="#131a30" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="38" y="77" width="20" height="20"/>
+        <path d="M38 77 l8 -8 h20 v20 l-8 8 M58 77 l8 -8"/>
+      </g>
+      <path d="M128 24 L100 48 L60 77" fill="none" stroke="#131a30" stroke-width="2.2" stroke-dasharray="1 5" stroke-linecap="round"/>
+      <circle cx="128" cy="24" r="4" fill="#131a30"/><circle cx="100" cy="48" r="4" fill="#131a30"/>
+    </symbol>
+
+    <!-- ℝ³ lettering -->
+    <symbol id="s-r3" viewBox="0 0 120 104">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke="#fff" stroke-width="36">
+          <path d="M28 24 V82 M28 24 H50 a15 14.5 0 0 1 0 29 H28 M44 53 L60 82"/>
+          <path d="M80 14 h17 l-9 10 a9 8.5 0 1 1 -10 11"/>
+        </g>
+        <g stroke="#131a30" stroke-width="22">
+          <path d="M28 24 V82 M28 24 H50 a15 14.5 0 0 1 0 29 H28 M44 53 L60 82"/>
+          <path d="M80 14 h17 l-9 10 a9 8.5 0 1 1 -10 11"/>
+        </g>
+        <g stroke="#2559c8" stroke-width="14">
+          <path d="M28 24 V82 M28 24 H50 a15 14.5 0 0 1 0 29 H28 M44 53 L60 82"/>
+        </g>
+        <path d="M80 14 h17 l-9 10 a9 8.5 0 1 1 -10 11" stroke="#ff9cc3" stroke-width="12"/>
+        <path d="M28 31 V75" stroke="#ffffff" stroke-width="3"/>
+      </g>
+    </symbol>
+
+    <!-- terminal prompt -->
+    <symbol id="s-term" viewBox="0 0 100 84">
+      <rect x="6" y="6" width="88" height="72" rx="14" fill="#131a30" stroke="#fff" stroke-width="10"/>
+      <circle cx="22" cy="22" r="4" fill="#ff9cc3"/><circle cx="34" cy="22" r="4" fill="#ffe27a"/><circle cx="46" cy="22" r="4" fill="#9fd6ef"/>
+      <path d="M22 42 l12 10 l-12 10" fill="none" stroke="#9fd6ef" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M42 62 h22" stroke="#ffe27a" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- sparkle -->
+    <symbol id="s-star" viewBox="0 0 100 100">
+      <path d="M50 6 C54 34 66 46 94 50 C66 54 54 66 50 94 C46 66 34 54 6 50 C34 46 46 34 50 6Z" fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round"/>
+      <path d="M50 6 C54 34 66 46 94 50 C66 54 54 66 50 94 C46 66 34 54 6 50 C34 46 46 34 50 6Z" fill="#ffe27a" stroke="#131a30" stroke-width="4" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="s-star-pink" viewBox="0 0 100 100">
+      <path d="M50 6 C54 34 66 46 94 50 C66 54 54 66 50 94 C46 66 34 54 6 50 C34 46 46 34 50 6Z" fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round"/>
+      <path d="M50 6 C54 34 66 46 94 50 C66 54 54 66 50 94 C46 66 34 54 6 50 C34 46 46 34 50 6Z" fill="#ff9cc3" stroke="#131a30" stroke-width="4" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- question-mark starburst -->
+    <symbol id="s-qburst" viewBox="0 0 120 120">
+      <polygon points="60.0,6.0 69.1,20.0 83.4,11.3 85.6,27.9 102.2,26.3 96.9,42.2 112.6,48.0 101.0,60.0 112.6,72.0 96.9,77.8 102.2,93.7 85.6,92.1 83.4,108.7 69.1,100.0 60.0,114.0 50.9,100.0 36.6,108.7 34.4,92.1 17.8,93.7 23.1,77.8 7.4,72.0 19.0,60.0 7.4,48.0 23.1,42.2 17.8,26.3 34.4,27.9 36.6,11.3 50.9,20.0" fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round"/>
+      <polygon points="60.0,6.0 69.1,20.0 83.4,11.3 85.6,27.9 102.2,26.3 96.9,42.2 112.6,48.0 101.0,60.0 112.6,72.0 96.9,77.8 102.2,93.7 85.6,92.1 83.4,108.7 69.1,100.0 60.0,114.0 50.9,100.0 36.6,108.7 34.4,92.1 17.8,93.7 23.1,77.8 7.4,72.0 19.0,60.0 7.4,48.0 23.1,42.2 17.8,26.3 34.4,27.9 36.6,11.3 50.9,20.0" fill="#ff9cc3" stroke="#131a30" stroke-width="3.5" stroke-linejoin="round"/>
+      <text x="60" y="79" text-anchor="middle" font-family="'Bagel Fat One', 'Arial Black', sans-serif" font-size="54" fill="#131a30">?</text>
+    </symbol>
+
+    <!-- award rosette -->
+    <symbol id="s-rosette" viewBox="0 0 100 130">
+      <g fill="#fff" stroke="#fff" stroke-width="12" stroke-linejoin="round">
+        <path d="M34 62 L22 122 L36 112 L44 126 L52 70Z"/>
+        <path d="M66 62 L78 122 L64 112 L56 126 L48 70Z"/>
+        <path d="M50 4 L58 13 L70 9 L73 21 L85 24 L82 36 L91 45 L82 54 L85 66 L73 69 L70 81 L58 77 L50 86 L42 77 L30 81 L27 69 L15 66 L18 54 L9 45 L18 36 L15 24 L27 21 L30 9 L42 13Z"/>
+      </g>
+      <path d="M34 62 L22 122 L36 112 L44 126 L52 70Z" fill="#ff9cc3" stroke="#131a30" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M66 62 L78 122 L64 112 L56 126 L48 70Z" fill="#9fd6ef" stroke="#131a30" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M50 4 L58 13 L70 9 L73 21 L85 24 L82 36 L91 45 L82 54 L85 66 L73 69 L70 81 L58 77 L50 86 L42 77 L30 81 L27 69 L15 66 L18 54 L9 45 L18 36 L15 24 L27 21 L30 9 L42 13Z" fill="#ffe27a" stroke="#131a30" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="50" cy="45" r="22" fill="#fff" stroke="#131a30" stroke-width="3"/>
+      <path d="M50 31 L54 41 L65 41 L56 48 L59 59 L50 52 L41 59 L44 48 L35 41 L46 41Z" fill="#ef3f87" stroke="#131a30" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="page">
 
-  <header class="row masthead">
-    <div class="portrait"><img src="avatar.jpg" alt="Xiangyi (Bruni) Liu" width="164" height="164"></div>
-    <div class="ident">
-      <div>
-        <h1><span class="en">Xiangyi (Bruni) Liu</span> <span class="zh" lang="zh-CN">刘香邑</span></h1>
-        <p class="role">Undergraduate, Liaoning University</p>
-        <p class="affil">
-          <span class="affil-lab">Asia-Australia Business College</span>
-          <span class="affil-lab">Faculty of Information</span>
+  <header class="hero">
+    <div class="lid" id="lid" tabindex="-1">
+      <span class="tape tape-a" aria-hidden="true"></span>
+      <span class="tape tape-b" aria-hidden="true"></span>
+
+      <div class="photo stk" data-drag>
+        <img src="avatar-sticker.webp" alt="Xiangyi (Bruni) Liu" width="760" height="760" draggable="false">
+      </div>
+
+      <h1 class="name"><span class="l1"><span class="w w1 stk" data-t="Xiangyi">Xiangyi</span></span> <span class="l2"><span class="w w2 stk" data-t="(Bruni)">(Bruni)</span> <span class="w w3 stk" data-t="Liu">Liu</span> <span class="seal stk" lang="zh-CN">刘香邑</span></span></h1>
+
+      <div class="cluster">
+        <p class="role label peel stk">Undergraduate, Liaoning University</p>
+        <p class="affil label stk">
+          <span>Asia-Australia Business College</span>
+          <span>Faculty of Information</span>
         </p>
       </div>
+
       <ul class="links">
-        <li><a href="https://github.com/BruniLiu">GitHub</a></li>
-        <li><a href="mailto:20242802115@smail.lnu.edu.cn">20242802115@smail.lnu.edu.cn</a></li>
-        <li class="pending">Google Scholar · coming soon</li>
+        <li><a class="chip chip-gh stk" href="https://github.com/BruniLiu"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></li>
+        <li><a class="chip chip-mail stk" href="mailto:20242802115@smail.lnu.edu.cn">20242802115@smail.lnu.edu.cn</a></li>
+        <li class="slot">Google Scholar · coming soon</li>
       </ul>
+
+      <div class="deco deco-a" aria-hidden="true">
+        <svg class="d d-gauss stk" data-drag viewBox="0 0 150 116" aria-hidden="true" focusable="false"><use href="#s-gauss"/></svg>
+        <svg class="d d-r3 stk" data-drag viewBox="0 0 120 104" aria-hidden="true" focusable="false"><use href="#s-r3"/></svg>
+        <span class="d d-sigma f stk" data-drag aria-hidden="true">Σ = RSS<sup>T</sup>R<sup>T</sup></span>
+        <svg class="d d-star2 stk" data-drag viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star-pink"/></svg>
+      </div>
+      <div class="deco deco-b" aria-hidden="true">
+        <svg class="d d-ct stk" data-drag viewBox="0 0 120 120" aria-hidden="true" focusable="false"><use href="#s-ct"/></svg>
+        <span class="d d-yax f stk" data-drag aria-hidden="true">y = A<i>x</i></span>
+        <svg class="d d-star1 stk" data-drag viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star"/></svg>
+        <svg class="d d-frames stk" data-drag viewBox="0 0 160 124" aria-hidden="true" focusable="false"><use href="#s-frames"/></svg>
+      </div>
     </div>
+    <div class="hinge" aria-hidden="true"></div>
+    <button class="reset" type="button" hidden>↺ Reset stickers</button>
   </header>
 
-  <section class="row research" aria-labelledby="h-research">
-    <h2 class="key" id="h-research">Research question</h2>
-    <div>
-      <p class="thesis">How should <em>3D space</em> be parameterized and represented?</p>
+  <main>
+    <section class="nb" aria-labelledby="h-research">
+      <div class="nb-paper" aria-hidden="true"><i></i></div>
+      <div class="holes" aria-hidden="true"><i></i><i></i><i></i></div>
+      <h2 class="hd hd-label" id="h-research" style="--f: var(--pink); --r: -3deg">Research question</h2>
+      <div class="nb-q">
+        <p class="thesis">How should <em>3D space</em> be parameterized and represented?</p>
+        <svg class="qburst stk" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><use href="#s-qburst"/></svg>
+      </div>
 
       <ol class="path" aria-label="Research trajectory">
         <li class="stage">
-          <svg class="glyph" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
-            <g transform="translate(40 47) rotate(-26)">
-              <ellipse class="fa" rx="34" ry="13"/>
-              <ellipse class="ac fill" rx="17" ry="6.5"/>
-              <circle class="adot" r="1.7"/>
-            </g>
-            <g transform="translate(80 29) rotate(34)">
-              <ellipse class="fa" rx="24" ry="9"/>
-              <ellipse class="ln fill" rx="12" ry="4.5"/>
-              <circle class="dot" r="1.4"/>
-            </g>
-            <g transform="translate(88 61) rotate(-6)">
-              <ellipse class="fa" rx="18" ry="8"/>
-              <ellipse class="ln fill" rx="9" ry="4"/>
-              <circle class="dot" r="1.3"/>
-            </g>
-          </svg>
-          <div class="stage-text">
+          <div class="stage-art" aria-hidden="true"><span class="num">01</span><svg class="stk" viewBox="0 0 150 116" focusable="false"><use href="#s-gauss"/></svg></div>
+          <div>
             <h3>3D Gaussian Splatting</h3>
             <p>Dynamic topology formation during training</p>
             <a class="see" href="#fm-topofreeze" aria-label="See project below: Budgeted Topology Formation for Compact 3D Gaussian Splatting">See project <span aria-hidden="true">↓</span></a>
           </div>
         </li>
         <li class="stage">
-          <svg class="glyph" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
-            <circle class="fa" cx="60" cy="40" r="33"/>
-            <line class="ray" x1="60" y1="7" x2="60" y2="73"/>
-            <line class="ray" x1="88.6" y1="56.5" x2="31.4" y2="23.5"/>
-            <line class="ray" x1="31.4" y1="56.5" x2="88.6" y2="23.5"/>
-            <ellipse class="ln" cx="60" cy="40" rx="17" ry="23"/>
-            <ellipse class="lt" cx="60" cy="40.8" rx="14" ry="19.5"/>
-            <ellipse class="ln fill" transform="translate(54.6 41.5) rotate(18)" rx="2.6" ry="7.2"/>
-            <ellipse class="ln fill" transform="translate(65.6 41.5) rotate(-18)" rx="3.6" ry="9"/>
-            <circle class="dot" cx="60" cy="28.5" r="1.5"/>
-            <line class="det" x1="48" y1="73" x2="72" y2="73"/>
-            <line class="det" x1="37.4" y1="13.1" x2="25.4" y2="33.9"/>
-            <line class="det" x1="94.6" y1="33.9" x2="82.6" y2="13.1"/>
-          </svg>
-          <div class="stage-text">
+          <div class="stage-art" aria-hidden="true"><span class="num">02</span><svg class="stk" viewBox="0 0 120 120" focusable="false"><use href="#s-ct"/></svg></div>
+          <div>
             <h3>Sparse-view CT reconstruction</h3>
             <p>Reconstruction as an ill-posed inverse problem</p>
           </div>
         </li>
         <li class="stage" aria-current="step">
-          <svg class="glyph" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
-            <rect class="fr fr3" x="58" y="6" width="50" height="32" rx="2"/>
-            <rect class="fr fr2" x="39" y="20" width="50" height="32" rx="2"/>
-            <rect class="fr fr1" x="20" y="34" width="50" height="32" rx="2"/>
-            <polyline class="ray" points="94,19 78,31 51,46"/>
-            <circle class="adot" cx="94" cy="19" r="1.8"/>
-            <circle class="adot" cx="78" cy="31" r="1.8"/>
-            <g class="ac">
-              <rect x="41" y="48" width="10" height="10"/>
-              <path d="M41 48 l4 -4 h10 v10 l-4 4 M51 48 l4 -4"/>
-            </g>
-          </svg>
-          <div class="stage-text">
+          <div class="stage-art" aria-hidden="true"><span class="num">03</span><svg class="stk" viewBox="0 0 160 124" focusable="false"><use href="#s-frames"/></svg></div>
+          <div>
             <h3>World models<span class="vh">, </span><span class="now">now</span></h3>
             <p>Memory and 3D structure</p>
           </div>
         </li>
       </ol>
-    </div>
-  </section>
+    </section>
 
-  <section class="sec bio" aria-labelledby="h-about">
-    <div class="row sec-head">
-      <h2 id="h-about">About</h2>
-      <div class="key">
+    <div class="sheets">
+      <section class="sheet bio s-about t-dots" aria-labelledby="h-about">
+        <h2 class="hd hd-bubble" id="h-about">About<i aria-hidden="true"></i></h2>
         <div class="lang" role="group" aria-label="Bio language">
           <button type="button" id="lang-en" aria-pressed="true">EN</button>
           <button type="button" id="lang-zh" aria-pressed="false" lang="zh-CN">中文</button>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="key"></div>
-      <div>
         <div id="bio-en">
           <p>Xiangyi (Bruni) Liu is an undergraduate at Liaoning University. Her research asks how 3D space should be parameterized and represented. This question has run through her work from 3D Gaussian Splatting, to sparse-view CT reconstruction, where she treats reconstruction as an ill-posed inverse problem, and now to memory and 3D structure in world models.</p>
           <p>She prefers mathematical solutions over heuristics. She has been a visiting student at Shenzhen University of Advanced Technology (SUAT) and University College London (UCL), and has interned at Harbin Institute of Technology.</p>
@@ -506,124 +1085,130 @@ h1 .zh {
           <p>刘香邑，辽宁大学本科生。她的研究关心一个问题：三维空间应该如何被参数化和表示。这个问题从 3D Gaussian Splatting 一路贯穿到稀疏视角 CT 重建（将重建视为病态逆问题），再到世界模型中的记忆与三维结构。</p>
           <p>她偏好用数学而非启发式补丁解决问题。曾在深圳理工大学、伦敦大学学院（UCL）访问，并在哈尔滨工业大学实习。</p>
         </div>
-      </div>
+      </section>
+
+      <section class="sheet s-news t-lemon" aria-labelledby="h-news">
+        <h2 class="hd hd-burst" id="h-news">News</h2>
+        <svg class="corner c-br stk" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star-pink"/></svg>
+        <ul class="list">
+          <li><span class="when">2026.09</span><p>Returned to Liaoning University.</p></li>
+          <li><span class="when">2026.07</span><p>Visiting researcher at Shenzhen University of Advanced Technology (SUAT).</p></li>
+          <li><span class="when">2025</span><p>Received the National Scholarship for undergraduates (2024–2025).</p></li>
+          <li><span class="when">2025</span><p>Attended UCL Summer School: Artificial Intelligence, Concepts and Applications.</p></li>
+        </ul>
+      </section>
+
+      <section class="sheet s-exp t-stripe" aria-labelledby="h-exp">
+        <h2 class="hd hd-ticket" id="h-exp">Research Experience</h2>
+        <svg class="corner c-bl stk" viewBox="0 0 100 84" aria-hidden="true" focusable="false"><use href="#s-term"/></svg>
+        <ul class="list entries">
+          <li>
+            <span class="when">2026.06–09</span>
+            <div class="entry">
+              <h3>Shenzhen University of Advanced Technology (SUAT)</h3>
+              <p class="meta">Visiting student</p>
+              <p class="desc"><span class="lab">Advanced Bioelectronics Lab</span> (Caizhi Liao): the machine-learning part of a sensor-to-health-analytics pipeline.</p>
+              <p class="desc"><span class="lab">Institute of Artificial Intelligence</span> (Shiwen Ni): world models and 3D scene generation under multimodal constraints.</p>
+            </div>
+          </li>
+          <li>
+            <span class="when">2025.12–02</span>
+            <div class="entry">
+              <h3>Harbin Institute of Technology</h3>
+              <p class="meta">Research intern, Massive Data Computing Research Center</p>
+              <p class="desc">Multivariate time-series anomaly detection and efficient inference. Helped design CATCH (Channel-Aware TSAD), which models cross-channel correlation through frequency patching.</p>
+              <p class="desc">Built a filter-before-detector pipeline with a lightweight encoder–decoder and MLP gate that pre-screens normal samples, evaluated with risk–coverage analysis in PyTorch.</p>
+            </div>
+          </li>
+          <li>
+            <span class="when">2025.06–08</span>
+            <div class="entry">
+              <h3>University College London (UCL)</h3>
+              <p class="meta">Visiting student, Computational Light Laboratory</p>
+              <p class="desc">Coursework in deep learning and multimodal models (87.6/100, ranked 3/46). Reproduced and evaluated 3D reconstruction baselines across multiple scenes, and wrote batch scripts for multi-scene, multi-parameter experiments.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sheet s-proj t-check" aria-labelledby="h-proj">
+        <h2 class="hd hd-label" id="h-proj">Projects</h2>
+        <svg class="corner c-br stk" viewBox="0 0 150 116" aria-hidden="true" focusable="false"><use href="#s-gauss"/></svg>
+        <ul class="list entries">
+          <li id="fm-topofreeze">
+            <span class="when">2025.10–04</span>
+            <div class="entry">
+              <h3>Budgeted Topology Formation for Compact 3D Gaussian Splatting</h3>
+              <p class="meta">FM-TopoFreeze · Liaoning University</p>
+              <p class="desc">Treats 3DGS densification as budget-constrained topology formation during training. Feasibility-matched candidate selection, driven by image residuals, raises target-budget realization from 92.0% to 100.0%. On Mip-NeRF 360 it improves PSNR on 7/7 scenes over a fixed-topology baseline (average 28.503 → 28.687 dB).</p>
+              <p class="code"><a href="https://github.com/BruniLiu/Budgeted-Gaussian-Gating"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Code</a></p>
+            </div>
+          </li>
+          <li>
+            <span class="when">2025.07–08</span>
+            <div class="entry">
+              <h3>Multimodal Image Captioning System</h3>
+              <p class="desc">An image captioning pipeline that maps CLIP image embeddings into the GPT-2 latent space through a projection module. Evaluated on 1,000+ images with CLIP similarity and entropy-weighted metrics, with an analysis of prompt structure and token length.</p>
+              <p class="code"><a href="https://github.com/BruniLiu/Multimodal-Image-Captioning-System"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Code</a></p>
+            </div>
+          </li>
+          <li>
+            <span class="when"></span>
+            <div class="entry">
+              <h3>EMG armband acquisition software</h3>
+              <p class="desc">Data acquisition software for a self-built 8-channel EMG armband (EMGRPO).</p>
+            </div>
+          </li>
+          <li>
+            <span class="when"></span>
+            <div class="entry">
+              <h3>FirstSign</h3>
+              <p class="desc">A hospital triage terminal driven by sign-language recognition. Course project; led the technical work.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sheet s-edu t-none" aria-labelledby="h-edu">
+        <h2 class="hd hd-ribbon" id="h-edu">Education</h2>
+        <svg class="clip" viewBox="0 0 32 84" aria-hidden="true" focusable="false"><path d="M20 26 V60 a6 6 0 0 1 -12 0 V14 a9 9 0 0 1 18 0 V64 a12 12 0 0 1 -24 0 V24" fill="none" stroke="#8ea3b8" stroke-width="3.4" stroke-linecap="round"/><path d="M20 26 V60 a6 6 0 0 1 -12 0 V14 a9 9 0 0 1 18 0 V64 a12 12 0 0 1 -24 0 V24" fill="none" stroke="#e4ecf4" stroke-width="1.2" stroke-linecap="round" transform="translate(-.6 -.6)"/></svg>
+        <svg class="corner c-br stk" viewBox="0 0 120 104" aria-hidden="true" focusable="false"><use href="#s-r3"/></svg>
+        <ul class="list entries">
+          <li>
+            <span class="when">2024–2028</span>
+            <div class="entry">
+              <h3>Liaoning University</h3>
+              <p class="meta">B.A. in Accounting (expected 2028) · GPA 3.7/4.0 · Rank 17/187</p>
+              <p class="desc">Cross-listed coursework in CS and mathematics: Machine Learning, Data Structures, Optimization Theory, Real Analysis, Numerical Analysis, Digital Image Processing.</p>
+            </div>
+          </li>
+          <li>
+            <span class="when">2025</span>
+            <div class="entry"><h3>Peking University Summer School</h3></div>
+          </li>
+          <li>
+            <span class="when">2025</span>
+            <div class="entry">
+              <h3>UCL Summer School</h3>
+              <p class="meta">Artificial Intelligence: Concepts and Applications</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sheet awards s-awards t-none" aria-labelledby="h-awards">
+        <h2 class="hd hd-seal" id="h-awards">Awards</h2>
+        <svg class="rosette stk" viewBox="0 0 100 130" aria-hidden="true" focusable="false"><use href="#s-rosette"/></svg>
+        <ul class="list">
+          <li><span class="when">2024–25</span><p>National Scholarship for undergraduates</p></li>
+          <li><span class="when"></span><p>First-Class Scholarship; Outstanding Student Leader Scholarship</p></li>
+        </ul>
+      </section>
     </div>
-  </section>
+  </main>
 
-  <section class="sec" aria-labelledby="h-news">
-    <div class="row sec-head"><h2 id="h-news">News</h2><div class="key"></div></div>
-    <ul class="list dated">
-      <li class="row"><span class="key">2026.09</span><p>Returned to Liaoning University.</p></li>
-      <li class="row"><span class="key">2026.07</span><p>Visiting researcher at Shenzhen University of Advanced Technology (SUAT).</p></li>
-      <li class="row"><span class="key">2025</span><p>Received the National Scholarship for undergraduates (2024–2025).</p></li>
-      <li class="row"><span class="key">2025</span><p>Attended UCL Summer School: Artificial Intelligence, Concepts and Applications.</p></li>
-    </ul>
-  </section>
-
-  <section class="sec" aria-labelledby="h-exp">
-    <div class="row sec-head"><h2 id="h-exp">Research Experience</h2><div class="key"></div></div>
-    <ul class="list dated entries">
-      <li class="row">
-        <span class="key">2026.06–09</span>
-        <div class="entry">
-          <h3>Shenzhen University of Advanced Technology (SUAT)</h3>
-          <p class="meta">Visiting student</p>
-          <p class="desc"><span class="lab">Advanced Bioelectronics Lab</span> (Caizhi Liao): the machine-learning part of a sensor-to-health-analytics pipeline.</p>
-          <p class="desc"><span class="lab">Institute of Artificial Intelligence</span> (Shiwen Ni): world models and 3D scene generation under multimodal constraints.</p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key">2025.12–02</span>
-        <div class="entry">
-          <h3>Harbin Institute of Technology</h3>
-          <p class="meta">Research intern, Massive Data Computing Research Center</p>
-          <p class="desc">Multivariate time-series anomaly detection and efficient inference. Helped design CATCH (Channel-Aware TSAD), which models cross-channel correlation through frequency patching.</p>
-          <p class="desc">Built a filter-before-detector pipeline with a lightweight encoder–decoder and MLP gate that pre-screens normal samples, evaluated with risk–coverage analysis in PyTorch.</p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key">2025.06–08</span>
-        <div class="entry">
-          <h3>University College London (UCL)</h3>
-          <p class="meta">Visiting student, Computational Light Laboratory</p>
-          <p class="desc">Coursework in deep learning and multimodal models (87.6/100, ranked 3/46). Reproduced and evaluated 3D reconstruction baselines across multiple scenes, and wrote batch scripts for multi-scene, multi-parameter experiments.</p>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sec" aria-labelledby="h-proj">
-    <div class="row sec-head"><h2 id="h-proj">Projects</h2><div class="key"></div></div>
-    <ul class="list dated entries">
-      <li class="row" id="fm-topofreeze">
-        <span class="key">2025.10–04</span>
-        <div class="entry">
-          <h3>Budgeted Topology Formation for Compact 3D Gaussian Splatting</h3>
-          <p class="meta">FM-TopoFreeze · Liaoning University</p>
-          <p class="desc">Treats 3DGS densification as budget-constrained topology formation during training. Feasibility-matched candidate selection, driven by image residuals, raises target-budget realization from 92.0% to 100.0%. On Mip-NeRF 360 it improves PSNR on 7/7 scenes over a fixed-topology baseline (average 28.503 → 28.687 dB).</p>
-          <p class="code"><a href="https://github.com/BruniLiu/Budgeted-Gaussian-Gating">Code</a></p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key">2025.07–08</span>
-        <div class="entry">
-          <h3>Multimodal Image Captioning System</h3>
-          <p class="desc">An image captioning pipeline that maps CLIP image embeddings into the GPT-2 latent space through a projection module. Evaluated on 1,000+ images with CLIP similarity and entropy-weighted metrics, with an analysis of prompt structure and token length.</p>
-          <p class="code"><a href="https://github.com/BruniLiu/Multimodal-Image-Captioning-System">Code</a></p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key"></span>
-        <div class="entry">
-          <h3>EMG armband acquisition software</h3>
-          <p class="desc">Data acquisition software for a self-built 8-channel EMG armband (EMGRPO).</p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key"></span>
-        <div class="entry">
-          <h3>FirstSign</h3>
-          <p class="desc">A hospital triage terminal driven by sign-language recognition. Course project; led the technical work.</p>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sec" aria-labelledby="h-edu">
-    <div class="row sec-head"><h2 id="h-edu">Education</h2><div class="key"></div></div>
-    <ul class="list dated entries">
-      <li class="row">
-        <span class="key">2024–2028</span>
-        <div class="entry">
-          <h3>Liaoning University</h3>
-          <p class="meta">B.A. in Accounting (expected 2028) · GPA 3.7/4.0 · Rank 17/187</p>
-          <p class="desc">Cross-listed coursework in CS and mathematics: Machine Learning, Data Structures, Optimization Theory, Real Analysis, Numerical Analysis, Digital Image Processing.</p>
-        </div>
-      </li>
-      <li class="row">
-        <span class="key">2025</span>
-        <div class="entry"><h3>Peking University Summer School</h3></div>
-      </li>
-      <li class="row">
-        <span class="key">2025</span>
-        <div class="entry">
-          <h3>UCL Summer School</h3>
-          <p class="meta">Artificial Intelligence: Concepts and Applications</p>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sec" aria-labelledby="h-awards">
-    <div class="row sec-head"><h2 id="h-awards">Awards</h2><div class="key"></div></div>
-    <ul class="list dated">
-      <li class="row"><span class="key">2024–25</span><p>National Scholarship for undergraduates</p></li>
-      <li class="row"><span class="key"></span><p>First-Class Scholarship; Outstanding Student Leader Scholarship</p></li>
-    </ul>
-  </section>
-
-  <footer class="row foot">
-    <div class="key"></div>
+  <footer class="foot">
+    <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#s-star"/></svg>
     <p>Last updated October 2026.</p>
   </footer>
 </div>
@@ -642,6 +1227,84 @@ h1 .zh {
   bEn.onclick = function () { set('en'); };
   bZh.onclick = function () { set('zh'); };
   try { if (localStorage.getItem('bio-lang') === 'zh') set('zh'); } catch (e) {}
+})();
+
+// Stickers on the lid can be peeled off and moved with a mouse or pen. Touch keeps
+// scrolling the page. A sticker stays inside the lid, and one dropped on the name,
+// the labels or the links slides back to where it was picked up.
+(function () {
+  var lid = document.getElementById('lid');
+  var reset = lid.parentNode.querySelector('.reset');
+  var guarded = lid.querySelectorAll('.name .w, .seal, .cluster .label, .links li');
+  var cur = null, sx = 0, sy = 0, ox = 0, oy = 0, moved = false, z = 30, box = null;
+
+  function off(el, k) { return parseFloat(el.style.getPropertyValue(k)) || 0; }
+  function area(a) { return Math.max(0, a.right - a.left) * Math.max(0, a.bottom - a.top); }
+  function covers(el) {
+    var r = el.getBoundingClientRect();
+    var k = Math.min(r.width, r.height) * 0.14; // rotated stickers have generous boxes
+    var a = { left: r.left + k, top: r.top + k, right: r.right - k, bottom: r.bottom - k };
+    for (var i = 0; i < guarded.length; i++) {
+      var g = guarded[i];
+      if (g === el || g.contains(el) || el.contains(g)) continue;
+      var q = g.getBoundingClientRect();
+      var x = { left: Math.max(a.left, q.left), top: Math.max(a.top, q.top), right: Math.min(a.right, q.right), bottom: Math.min(a.bottom, q.bottom) };
+      if (area(x) > 0.2 * Math.min(area(a), area(q))) return true;
+    }
+    return false;
+  }
+  function anyMoved() {
+    return Array.prototype.some.call(lid.querySelectorAll('[data-drag]'), function (el) {
+      return off(el, '--dx') !== 0 || off(el, '--dy') !== 0;
+    });
+  }
+
+  lid.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch' || e.button !== 0) return;
+    var el = e.target.closest('[data-drag]');
+    if (!el || !lid.contains(el)) return;
+    cur = el; moved = false;
+    sx = e.clientX; sy = e.clientY;
+    ox = off(el, '--dx'); oy = off(el, '--dy');
+    var L = lid.getBoundingClientRect(), R = el.getBoundingClientRect();
+    // keep at least 60% of the sticker on the lid
+    box = {
+      x0: L.left - R.left - R.width * 0.4, x1: L.right - R.right + R.width * 0.4,
+      y0: L.top - R.top - R.height * 0.4, y1: L.bottom - R.bottom + R.height * 0.4
+    };
+    el.style.animation = 'none';
+    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+    el.classList.add('dragging');
+    el.style.zIndex = ++z;
+    e.preventDefault();
+  });
+  lid.addEventListener('pointermove', function (e) {
+    if (!cur) return;
+    var dx = Math.min(box.x1, Math.max(box.x0, e.clientX - sx));
+    var dy = Math.min(box.y1, Math.max(box.y0, e.clientY - sy));
+    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+    cur.style.setProperty('--dx', (ox + dx) + 'px');
+    cur.style.setProperty('--dy', (oy + dy) + 'px');
+  });
+  function end() {
+    if (!cur) return;
+    var el = cur; cur = null;
+    if (moved && covers(el)) {
+      el.style.setProperty('--dx', ox + 'px');
+      el.style.setProperty('--dy', oy + 'px');
+    }
+    el.classList.remove('dragging');
+    reset.hidden = !anyMoved();
+  }
+  lid.addEventListener('pointerup', end);
+  lid.addEventListener('pointercancel', end);
+  reset.addEventListener('click', function () {
+    lid.querySelectorAll('[data-drag]').forEach(function (el) {
+      el.style.removeProperty('--dx'); el.style.removeProperty('--dy'); el.style.zIndex = '';
+    });
+    reset.hidden = true;
+    lid.focus({ preventScroll: true });
+  });
 })();
 </script>
 </body>
